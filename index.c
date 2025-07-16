@@ -160,27 +160,30 @@ struct movie {
 const char* theaterAddress() {
 	int address;
 
-	printf("\n============ 영화관 ============\n");
-	printf("== 영화관 지역을 선택해주세요 ==\n");
-	printf("1. 서울\n");
-	printf("2. 인천\n");
-	printf("3. 경기\n");
-	printf("0. 종료\n");
-	printf(" -> ");
-	scanf("%d", &address);	
-    printf("\n================================\n");
+	while(1){
+        printf("\n============ 영화관 ============\n");
+	    printf("== 영화관 지역을 선택해주세요 ==\n");
+	    printf("1. 서울\n");
+	    printf("2. 인천\n");
+	    printf("3. 경기\n");
+	    printf("0. 종료\n");
+	    printf(" -> ");
+	    scanf("%d", &address);	
+        printf("================================\n");
 
-    switch (address) {
-        case 1:
-            return "서울";
-        case 2:
-            return "인천";
-        case 3:
-            return "경기";
-        case 0:
-            return "종료";  
+        switch (address) {
+            case 1:
+                return "서울";
+             case 2:
+                 return "인천";
+            case 3:
+                 return "경기";
+            case 0:
+                 return "종료";  
+            default:
+                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
+        }
     }
-
 
 }
 
