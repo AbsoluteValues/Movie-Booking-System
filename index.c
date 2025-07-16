@@ -156,11 +156,21 @@ struct movie {
 };
 
 
+void theaterAddress() {
+	int address;
+	printf("\n============ 영화관 ============\n");
+	printf("== 예매할 영화관을 선택해주세요 ==\n");
+	printf("1. 서울");
+	printf("2. 인천");
+	printf("3. 경기");
+	scanf("%d", &address);
+}
 
 
 
 
 int main(void) {
+	theaterAddress();
 	
     return 0;
 }
