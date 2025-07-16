@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <conio.h>
+#include <stdbool.h>
 
 #define MAX_MOVIES 6
 
@@ -11,7 +12,7 @@ typedef struct Point {
 }Point;
 typedef struct Seat
 {
-    States state;
+    enum States state;
     Point pnt;
 }Seat;
 typedef struct CinemaRoom {
@@ -134,7 +135,7 @@ A:
     if (cnt < n) goto A;
     Clr();
     PrintSeats(data);
-    printf("1. 취소 / 2. 결제 페이지로.")
+    printf("1. 취소 / 2. 결제 페이지로.");
     // getchar인가 이거로 바꾸는게 나을 것 같은데... 
     // 취소하면 A, 아니면 진행
 }
