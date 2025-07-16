@@ -157,7 +157,7 @@ struct movie {
 };
 
 
-void theaterAddress() {
+const char* theaterAddress() {
 	int address;
 
 	printf("\n============ 영화관 ============\n");
@@ -188,7 +188,7 @@ void theaterAddress() {
 
 
 int main(void) {
-	theaterAddress();
+	const char* selected = theaterAddress();
 	
     return 0;
 }
