@@ -12,7 +12,7 @@ typedef struct Point {
 }Point;
 typedef struct Seat
 {
-    States state;
+    enum States state;
     Point pnt;
 }Seat;
 typedef struct CinemaRoom {
