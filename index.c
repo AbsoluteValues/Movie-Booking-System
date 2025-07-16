@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 //yangminseo
 /*
@@ -41,3 +43,11 @@
 포인트를 포함한 좌석. 열거형으로 상태 조작.
 
 */
+
+struct theaterAddress {
+	int addresss;	// 서울 1, 인천 2, 경기 3. 지역넘버를 매겨서 사용
+};
+
+int main(void) {
+
+}
