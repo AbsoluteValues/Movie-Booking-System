@@ -14,19 +14,31 @@ typedef struct Seat
     States state;
     Point pnt;
 }Seat;
-typedef struct BookingSeats {
+typedef struct CinemaRoom {
     Seat* seats;
+    int seatCnt;
     int sizeX, sizeY;
     // prevScene;
-}BS;
-
-bool PrintSeats(BS data) {
+}Cinema;
+bool ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정별로 구분할거라면... 어쩌구저쩌구
+    int i, j;
+    for (i = 0; i < data->sizeX; i += 1) {
+        for (j = 0; j < data->sizeY; j += 1) {
+            if (data->seats.state == CHOOSE)
+                data->seats.state = BLANK;
+        }
+    }
+    return true;
+}
+bool PrintSeats(Cinema* data) {
     // 매개변수에 이게 어느 지역의 어느 영화의 어느 관인지 구분할 수 있는 뭔가가 필요함.
     // 불러와서 좌석표 출력.
+    Clr();
     int i, j;
-    for (i = 0; i < data.sizeX; i += 1) {
-        for (j = 0; j < data.sizeY; j += 1) {
-            switch (data.seats[i][j].state)
+    printf("==================================================\n\n");
+    for (i = 0; i < data->sizeX; i += 1) {
+        for (j = 0; j < data->sizeY; j += 1) {
+            switch (data->seats[i][j].state)
             {
             case 0:
                 printf("□");
@@ -44,23 +56,87 @@ bool PrintSeats(BS data) {
         }
         printf("\n");
     }
+    printf("\n==================================================\n");
+    return true;
 }
-bool BookingPeople() {
-    Clr();
+bool BookingPeople(Cinema* data) {
     // 좌석목록 띄운 채로 몇명 예약할지 결정.
     // 뒤로가기라면 시간/관 선택 창으로.
     // 인원이 0명 초과일때만 BookingSeats 로 진행.
-}
-bool BookingSeats(int num) {
+    int n;
+A:
     Clr();
+    PrintSeats(data);
+    printf("\n-1 입력시 이전 메뉴로\n- - - - - - - - - - - - - - -\n");
+    printf("예약할 인원 : ");
+    scanf("%d", n);
+    if (n == -1) return;
+    if (n < 1) {
+        printf("1명 이상 선택해주세요.");
+        goto A;
+    }
+    else if (n > data->seatCnt) {
+        printf("예매 가능한 좌석이 부족합니다.\n남은 좌석은 %d석입니다.", data->seatCnt);
+        goto A;
+    }
+    else {
+        BookingSeats(data, n);
+    }
+}
+bool BookingSeats(Cinema* data, int n) {
+    char point[2];
+    Point p;
+    int cnt = 0;
     // 몇명 예약할지 받아오고 좌석목록 띄움.
     // 좌표 입력. 동시에 뒤로가기도 받아야 함.
     // 뒤로가기라면 BookingPeople 로.
     // 올바른지 체크
     // 올바르다면 현재 카운트 체크
     // 카운트 미만이면 색 바꾸고, 아니라면 이미 n명 선택했음 띄움.
-    // 
-    // 
+A:
+    Clr();
+    PrintSeats(data);
+    printf("\n-1 입력시 이전 메뉴로\n- - - - - - - - - - - - - - -\n");
+    printf("예약할 좌석 좌표를 입력하세요(ex:B3) : ");
+    gets_s(point, 2);
+    p.x = (int)point[0];
+    p.y = atoi(point[1]);//a97 A65 z122 Z90
+    if (atoi(point[0]) == -1) {
+        if (cnt > 0) {
+            ClearChooseSeats(data);
+        }
+        return true;
+    }
+        
+    if (p.x >= 97 && p.x <= 97 + data->sizeY && p.x <= 122 && p.y > 0 && p.y <= data->sizeY) {
+        if (data->seats[p.x - 97][p.y].state == BLANK) {
+            data->seats[p.x - 97][p.y].state = CHOOSE;
+            cnt += 1;
+        }
+        else if (data->seats[p.x - 97][p.y].state == CHOOSE) {
+            data->seats[p.x - 97][p.y].state = BLANK;
+            cnt -= 1;
+        }
+        else printf("이미 예매된 좌석입니다.\n");
+    }
+    else if (p.x >= 65 && p.x <= 65 + data->sizeY && p.x <= 90 && p.y > 0 && p.y <= data->sizeY) {
+        if (data->seats[p.x - 65][p.y].state == BLANK) {
+            data->seats[p.x - 65][p.y].state = CHOOSE;
+            cnt += 1;
+        }
+        else if (data->seats[p.x - 65][p.y].state == CHOOSE) {
+            data->seats[p.x - 65][p.y].state = BLANK;
+            cnt -= 1;
+        }
+        else printf("이미 예매된 좌석입니다.\n");
+    }
+    else printf("선택할 수 없는 좌석입니다.\n");
+    if (cnt < n) goto A;
+    Clr();
+    PrintSeats(data);
+    printf("1. 취소 / 2. 결제 페이지로.")
+    // getchar인가 이거로 바꾸는게 나을 것 같은데... 
+    // 취소하면 A, 아니면 진행
 }
 
 static void Clr() { // 다들 모든 UI 및 씬 변경시마다 이거 붙이세요.
