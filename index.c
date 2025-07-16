@@ -159,12 +159,29 @@ struct movie {
 
 void theaterAddress() {
 	int address;
+
 	printf("\n============ 영화관 ============\n");
-	printf("== 예매할 영화관을 선택해주세요 ==\n");
-	printf("1. 서울");
-	printf("2. 인천");
-	printf("3. 경기");
-	scanf("%d", &address);
+	printf("== 영화관 지역을 선택해주세요 ==\n");
+	printf("1. 서울\n");
+	printf("2. 인천\n");
+	printf("3. 경기\n");
+	printf("0. 종료\n");
+	printf(" -> ");
+	scanf("%d", &address);	
+    printf("\n================================\n");
+
+    switch (address) {
+        case 1:
+            return "서울";
+        case 2:
+            return "인천";
+        case 3:
+            return "경기";
+        case 0:
+            return "종료";  
+    }
+
+
 }
 
 
