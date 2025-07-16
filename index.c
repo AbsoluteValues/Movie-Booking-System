@@ -1,12 +1,6 @@
 #include <stdio.h>
 
-int main(void) {
-
-    printf("Hello, World!");
-
-    return 0;
-}
-
+//yangminseo
 /*
 * Q
 상영관의 크기는? 전부 동일한가? 혹은 각각 다른가? 다르다면 어떻게 구분되는가?
