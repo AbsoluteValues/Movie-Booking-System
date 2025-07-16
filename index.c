@@ -55,6 +55,11 @@ struct movie {
 	char genre[50];
 };
 
-int main(void) {
 
+void theaterAddress();
+
+
+
+int main(void) {
+	
 }
