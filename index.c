@@ -3,6 +3,8 @@
 #include <string.h>
 #include <conio.h>
 
+#define MAX_MOVIES 6
+
 static enum States { BLANK, CHOOSE, FULL };
 typedef struct Point {
     int x, y;
