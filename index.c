@@ -3,6 +3,8 @@
 #include <string.h>
 #include <conio.h>
 
+#define MAX_MOVIES 6
+
 static enum States { BLANK, CHOOSE, FULL };
 typedef struct Point {
     int x, y;
@@ -146,17 +148,19 @@ struct theaterAddress {
 };
 
 struct movie {
-	int num;
-	char title[100];
-	int rating;
-	char genre[50];
+	int num;    //영화번호
+	char title[100];    //제목
+    char rating[50];    //등급
+	char genre[50];     //장르
+    int runtime;    //상영시간
 };
 
 
-void theaterAddress();
+
 
 
 
 int main(void) {
 	
+    return 0;
 }
