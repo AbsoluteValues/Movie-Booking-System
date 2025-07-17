@@ -191,9 +191,10 @@ B:
     return;
 }
 
-struct theaterAddress {
-	int addresss;	// 서울 1, 인천 2, 경기 3. 지역넘버를 매겨서 사용
-};
+typedef struct { 
+    char region[100];
+    char theater[100];
+} TheaterAddress;
 
 typedef struct movie {
 	int num;    //영화번호
@@ -225,9 +226,155 @@ int choiceMovie(Movie movies[]) {
     printf("잘못된 번호입니다.\n");
     return -1;
 }
+TheaterAddress theaterAddressSeoul(TheaterAddress address) {
+    int choice;
+	while(1) {
+        printf("\n============ 서울 ============\n");
+        printf("== 영화관을 선택해주세요 ==\n");
+        printf("1. 가산디지털\n");
+        printf("2. 강동\n");
+        printf("3. 건대입구\n");
+        printf("4. 김포공항\n");
+        printf("5. 노원\n");
+        printf("6. 서울대입구\n");
+        printf("7. 수유\n");
+        printf("8. 신도림\n");
+        printf("0. 종료\n");
+        printf(" -> ");
+        scanf("%d", &choice);	
+        printf("================================\n");
 
-const char* theaterAddress() {
-	struct theaterAddress address;
+        switch (choice) {
+            case 1:
+                strcpy(address.theater, "가산디지털");
+                return address;
+            case 2:
+                strcpy(address.theater, "강동");
+                return address;
+            case 3:
+                strcpy(address.theater, "건대입구");
+                return address;
+            case 4:
+                strcpy(address.theater, "김포공항");
+                return address;
+            case 5:
+                strcpy(address.theater, "노원");
+                return address;
+            case 6:
+                strcpy(address.theater, "서울대입구");
+                return address;
+            case 7:
+                strcpy(address.theater, "수유");
+                return address;
+            case 8:
+                strcpy(address.theater, "신도림");
+                return address;
+            case 0:
+                break; 
+            default:
+                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
+        } 
+        
+        printf("선택한 지역 :  %s\n", address.theater);
+    }
+    
+}
+TheaterAddress theaterAddressIncheon(TheaterAddress address){
+    int choice;
+
+	while(1) {
+        printf("\n============ 인천 ============\n");
+        printf("== 영화관을 선택해주세요 ==\n");
+        printf("1. 부평\n");
+        printf("2. 부평갈산\n");
+        printf("3. 부평역사\n");
+        printf("0. 종료\n");
+        printf(" -> ");
+        scanf("%d", &choice);	
+        printf("================================\n");
+
+        switch (choice) {
+            case 1:
+                strcpy(address.theater, "부평");
+                return address;
+            case 2:
+                strcpy(address.theater, "부평갈산");
+                return address;
+            case 3:
+                strcpy(address.theater, "부평역사");
+                return address;
+            case 0:
+                break; 
+            default:
+                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
+        } 
+        
+        printf("선택한 지역 :  %s\n", address.theater);
+    }
+    
+
+}
+TheaterAddress theaterAddresGyeonggi(TheaterAddress address){
+    int choice;
+
+	while(1) {
+        printf("\n============ 경기 ============\n");
+        printf("== 영화관을 선택해주세요 ==\n");
+        printf("1. 광명\n");
+        printf("2. 광명아울렛\n");
+        printf("3. 동탄\n");
+        printf("4. 부천\n");
+        printf("5. 수원(수원역)\n");
+        printf("6. 안산\n");
+        printf("7. 안성\n");
+        printf("8. 안양\n");
+        printf("0. 종료\n");
+        printf(" -> ");
+        scanf("%d", &choice);	
+        printf("================================\n");
+
+        switch (choice) {
+            case 1:
+                strcpy(address.theater, "광명");
+                return address;
+            case 2:
+                strcpy(address.theater, "광명아울렛");
+                return address;
+            case 3:
+                strcpy(address.theater, "동탄");
+                return address;
+            case 4:
+                strcpy(address.theater, "부천");
+                return address;
+            case 5:
+                strcpy(address.theater, "수원(수원역)");
+                return address;
+            case 6:
+                strcpy(address.theater, "안산");
+                return address;
+            case 7:
+                strcpy(address.theater, "안성");
+                return address;
+            case 8:
+                strcpy(address.theater, "안양");
+                return address;
+            case 0:
+                break; 
+            default:
+                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
+        } 
+        
+        printf("선택한 지역 :  %s\n", address.theater);
+    }
+    
+
+}
+
+
+TheaterAddress theaterAddress() {
+	TheaterAddress address;
+    int choice;
+
 	while(1) {
         printf("\n============ 영화관 ============\n");
         printf("== 영화관 지역을 선택해주세요 ==\n");
@@ -236,21 +383,26 @@ const char* theaterAddress() {
         printf("3. 경기\n");
         printf("0. 종료\n");
         printf(" -> ");
-        scanf("%d", &address.addresss);	
+        scanf("%d", &choice);	
         printf("================================\n");
 
-        switch (address.addresss) {
+        switch (choice) {
             case 1:
-                return "서울";
+                strcpy(address.region,"서울");
+                return theaterAddressSeoul(address);
             case 2:
-                return "인천";
+                strcpy(address.region,"인천");
+                return theaterAddressIncheon(address);
             case 3:
-                return "경기";
+                strcpy(address.region,"경기");
+                return theaterAddresGyeonggi(address);
             case 0:
                 break; 
             default:
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
-        }  
+        } 
+        
+        printf("선택한 지역 :  %s\n", address.region);
     }
 
 }
@@ -277,8 +429,8 @@ int main(void) {
 
     }
 
-	const char* selected = theaterAddress();
-	printf("선택한 지역 :  %s\n", selected);
+    TheaterAddress select = theaterAddress();
+	
 
     /*
     Cinema* preset = (Cinema*)malloc(sizeof(Cinema));
