@@ -55,7 +55,7 @@ void RandResetCinema(Cinema* preset, int x, int y) {
     if (y > CinemaMaxSizeY) y = CinemaMaxSizeY;
     for (i = 0; i < x; i++) {
         for (j = 0; j < y; j++) {
-            if (rand() % 4 > 2){
+            if (rand % 4 > 2){
                 preset->seats[i][j].state = FULL;
                 preset->seatCnt -= 1;
             }
