@@ -95,9 +95,8 @@ int LoadMoviesFromDB(Movie* movies) {
 
 void PrintMovies(Movie movie[]) {
     printf("\n==== 상영 중인 영화 목록 ====\n");
-    for (int i = 0; i < MAX_MOVIES; i++) {
-        printf("%d. %s ( %s )\n", movie[i].num, movie[i].title, movie[i].rating);
-        printf(" %s / %d분 \n", movie[i].genre, movie[i].runtime);
+    for (int i = 0; i < count; i++) {
+        printf("%d. %s (%s) %s / %d분\n", movie[i].num, movie[i].title, movie[i].rating, movie[i].genre, movie[i].runtime);
     }
 }
 
