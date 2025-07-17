@@ -6,14 +6,14 @@
 #define MAX_MOVIES 6
 
 static enum States { BLANK, CHOOSE, FULL };
-typedef struct Point {
+struct Point {
     int x, y;
-}Point;
-typedef struct Seat
+};
+struct Seat
 {
     States state;
     Point pnt;
-}Seat;
+};
 typedef struct CinemaRoom {
     Seat* seats;
     int seatCnt;
