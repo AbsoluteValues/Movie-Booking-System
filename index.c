@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
+// #include <conio.h>
 #include <stdbool.h>
 #include <time.h>
 
@@ -10,26 +10,41 @@
 #define CinemaMaxSizeY 21
 
 enum States { BLANK, CHOOSE, FULL };
-typedef struct PointXY {  // 필요한가?
+
+typedef struct {
     int x, y;
-}Point;
-typedef struct SeatData {   // 각 좌석의 정보...
+} Point;
+
+typedef struct {
     enum States state;
     Point point;
-}Seat;
-typedef struct CinemaRoom {
-    Seat seats[CinemaMaxSizeX][CinemaMaxSizeY]; // 좌석 2차원 배열
-    int seatCnt;    // 남은 좌석 수
-    int sizeX, sizeY;   // 영화관 크기
-    // prevScene;
-}Cinema;
+} Seat;
+
+typedef struct {
+    Seat seats[CinemaMaxSizeX][CinemaMaxSizeY];
+    int seatCnt;
+    int sizeX, sizeY;
+} Cinema;
+
+typedef struct { 
+    char region[100];
+    char theater[100];
+} TheaterAddress;
+
+typedef struct {
+	int num;
+	char title[100];
+    char rating[50];
+	char genre[50];
+    int runtime;
+} Movie;
+
 void BookingSeats(Cinema* data, int n);
 void BookingPeople(Cinema* data);
+
 static void Clr() { // 다들 모든 UI 및 씬 변경시마다 이거 붙이세요.
     system("cls");  // 콘솔 창 지우는 기능.
 }
-char lineX[CinemaMaxSizeX] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' };
-int lineY[CinemaMaxSizeY] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 };
 
 void ResetCinema(Cinema* preset, int x, int y) {
     int i, j;
@@ -55,7 +70,7 @@ void RandResetCinema(Cinema* preset, int x, int y) {
     if (y > CinemaMaxSizeY) y = CinemaMaxSizeY;
     for (i = 0; i < x; i++) {
         for (j = 0; j < y; j++) {
-            if (rand % 4 > 2){
+            if (rand() % 4 > 2){
                 preset->seats[i][j].state = FULL;
                 preset->seatCnt -= 1;
             }
@@ -70,7 +85,7 @@ void RandResetCinema(Cinema* preset, int x, int y) {
     preset->sizeY = y;
 }
 
-void ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정별로 구분할거라면... 어쩌구저쩌구
+void ClearChooseSeats(Cinema* data) {
     int i, j;
     for (i = 0; i < data->sizeX; i += 1) {
         for (j = 0; j < data->sizeY; j += 1) {
@@ -83,6 +98,10 @@ void ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정�
 void PrintSeats(Cinema* data) {
     // 매개변수에 이게 어느 지역의 어느 영화의 어느 관인지 구분할 수 있는 뭔가가 필요함.
     // 불러와서 좌석표 출력.
+
+    char lineX[CinemaMaxSizeX] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' };
+    int lineY[CinemaMaxSizeY] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 };
+
     Clr();
     int i, j;
     printf("==================================================\n\n");
@@ -215,41 +234,29 @@ B:
     return;
 }
 
-typedef struct { 
-    char region[100];
-    char theater[100];
-} TheaterAddress;
-
-typedef struct movie {
-	int num;    //영화번호
-	char title[100];    //제목
-    char rating[50];    //등급
-	char genre[50];     //장르
-    int runtime;    //상영시간
-} Movie;
-
-void playMovies(Movie movies[]) {
+void playMovies(Movie movie[]) {
     printf("\n==== 상영 중인 영화 목록 ====\n");
     for (int i = 0; i < MAX_MOVIES; i++) {
-        printf("%d. %s ( %s )\n", movies[i].num, movies[i].title, movies[i].rating);
-        printf(" %s / %d분 \n", movies[i].genre, movies[i].runtime);
+        printf("%d. %s ( %s )\n", movie[i].num, movie[i].title, movie[i].rating);
+        printf(" %s / %d분 \n", movie[i].genre, movie[i].runtime);
     }
 }
 
-int choiceMovie(Movie movies[]) {
+int choiceMovie(Movie movie[]) {
     int choice;
     printf("\n영화 번호를 선택하시오 : ");
     scanf("%d", &choice);
 
     for (int i = 0; i < MAX_MOVIES; i++) {
-        if (movies[i].num == choice) {
-            printf("선택한 영화 : %s\n", movies[i].title);
+        if (movie[i].num == choice) {
+            printf("선택한 영화 : %s\n", movie[i].title);
             return i;
         }
     }
     printf("잘못된 번호입니다.\n");
     return -1;
 }
+
 TheaterAddress theaterAddressSeoul(TheaterAddress *address) {
     int choice;
 	do {
@@ -304,6 +311,7 @@ TheaterAddress theaterAddressSeoul(TheaterAddress *address) {
     return *address;
     
 }
+
 TheaterAddress theaterAddressIncheon(TheaterAddress *address){
     int choice;
 
@@ -339,6 +347,7 @@ TheaterAddress theaterAddressIncheon(TheaterAddress *address){
     return *address;
 
 }
+
 TheaterAddress theaterAddresGyeonggi(TheaterAddress *address){
     int choice;
 
@@ -395,9 +404,7 @@ TheaterAddress theaterAddresGyeonggi(TheaterAddress *address){
 
 }
 
-
 TheaterAddress theaterAddress(TheaterAddress *address) {
-    
     int regionChoice;
 	do {
         printf("\n============ 영화관 ============\n");
@@ -443,7 +450,7 @@ TheaterAddress theaterAddress(TheaterAddress *address) {
 
 int main(void) {
 
-    Movie movies[MAX_MOVIES] = {
+    Movie movie[MAX_MOVIES] = {
         {1, "F1 더 무비", "12세 이상 관람가", "액션, 드라마", 155},
         {2, "킹 오브 킹스", "전체 이용가", "애니메이션", 101},
         {3, "슈퍼맨", "12세 이상 관람가", "액션", 129},
@@ -452,9 +459,9 @@ int main(void) {
         {6, "명탐정 코난: 척안의 잔상", "12세 이상 관람가", "애니메이션", 109}
     };
 
-    playMovies(movies);
+    playMovies(movie);
     TheaterAddress *address = (TheaterAddress*)malloc(sizeof(TheaterAddress));
-    int choiceIndex = choiceMovie(movies);
+    int choiceIndex = choiceMovie(movie);
 
     if (choiceIndex != -1) {
 
@@ -462,12 +469,10 @@ int main(void) {
 
     theaterAddress(address);
 	
-
-    /*
     Cinema* preset = (Cinema*)malloc(sizeof(Cinema));
     ResetCinema(preset, 10, 21);
     BookingPeople(preset);
     free(preset);
-    */
+
     return 0;
 }
