@@ -55,7 +55,7 @@ void RandResetCinema(Cinema* preset, int x, int y) {
     if (y > CinemaMaxSizeY) y = CinemaMaxSizeY;
     for (i = 0; i < x; i++) {
         for (j = 0; j < y; j++) {
-            if (rand % 4 > 2){
+            if (rand() % 4 > 2){
                 preset->seats[i][j].state = FULL;
                 preset->seatCnt -= 1;
             }
@@ -299,7 +299,7 @@ TheaterAddress theaterAddressSeoul(TheaterAddress *address) {
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
         } 
         
-        printf("선택한 지역 :  %s\n", address->theater);
+        printf("선택한 영화관 :  %s\n", address->theater);
     }while(choice == 0);
     return *address;
     
@@ -334,7 +334,7 @@ TheaterAddress theaterAddressIncheon(TheaterAddress *address){
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
         } 
         
-        printf("선택한 지역 :  %s\n", address->theater);
+        printf("선택한 영화관 :  %s\n", address->theater);
     }while(choice != 0);
     return *address;
 
@@ -389,7 +389,7 @@ TheaterAddress theaterAddresGyeonggi(TheaterAddress *address){
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
         } 
         
-        printf("선택한 지역 :  %s\n", address->theater);
+        printf("선택한 영화관 :  %s\n", address->theater);
     }while(choice != 0);
     return *address;
 
