@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
+// #include <conio.h>
 #include <stdbool.h>
 
 #define MAX_MOVIES 6
 #define CinemaMaxSizeX 10
 #define CinemaMaxSizeY 21
 
-static enum States { BLANK, CHOOSE, FULL };
+enum States { BLANK, CHOOSE, FULL };
 typedef struct PointXY {  // 필요한가?
     int x, y;
 }Point;
@@ -22,6 +22,8 @@ typedef struct CinemaRoom {
     int sizeX, sizeY;   // 영화관 크기
     // prevScene;
 }Cinema;
+void BookingSeats(Cinema* data, int n);
+bool BookingPeople(Cinema* data);
 
 Cinema* preset;
 bool ResetCinema(Cinema* preset, int x, int y) {
@@ -56,7 +58,7 @@ bool ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정�
 bool PrintSeats(Cinema* data) {
     // 매개변수에 이게 어느 지역의 어느 영화의 어느 관인지 구분할 수 있는 뭔가가 필요함.
     // 불러와서 좌석표 출력.
-    Clr();
+    //Clr();
     int i, j;
     printf("==================================================\n\n");
     for (i = 0; i < data->sizeX; i += 1) {
@@ -89,7 +91,7 @@ bool BookingPeople(Cinema* data) {
     // 인원이 0명 초과일때만 BookingSeats 로 진행.
     int n;
 A:
-    Clr();
+    //Clr();
     PrintSeats(data);
     printf("\n-1 입력시 이전 메뉴로\n- - - - - - - - - - - - - - -\n");
     printf("예약할 인원 : ");
@@ -114,7 +116,7 @@ void BookingSeats(Cinema* data, int n) {
     char point[20];
     Point p;
     int cnt = 0;
-    char c;
+    int i;
     // 몇명 예약할지 받아오고 좌석목록 띄움.
     // 좌표 입력. 동시에 뒤로가기도 받아야 함.
     // 뒤로가기라면 BookingPeople 로.
@@ -122,20 +124,20 @@ void BookingSeats(Cinema* data, int n) {
     // 올바르다면 현재 카운트 체크
     // 카운트 미만이면 색 바꾸고, 아니라면 이미 n명 선택했음 띄움.
 A:
-    Clr();
+    //Clr();
     PrintSeats(data);
     printf("\n-1 입력시 이전 메뉴로\n- - - - - - - - - - - - - - -\n");
     printf("예약할 좌석 좌표를 입력하세요(ex:B3) : ");
     // 이렇게 받을지, 혹은 한글자씩 받으면서 계속 초기화할지...
     // 고민은 필요해 보인다.
-    gets(point);
+    fgets(point, sizeof(char)*2, stdin);
     p.x = (int)point[0];
     p.y = atoi(&point[1]);//a97 A65 z122 Z90
     if (atoi(&point[0]) == -1) {
         if (cnt > 0) {
             ClearChooseSeats(data);
         }
-        return 0;
+        return;
     }
         
     if (p.x >= 97 && p.x <= 97 + data->sizeY && p.x <= 122 && p.y > 0 && p.y <= data->sizeY) {
@@ -163,10 +165,10 @@ A:
     else printf("선택할 수 없는 좌석입니다.\n");
     if (cnt < n) goto A;
 B:
-    Clr();
+    //Clr();
     PrintSeats(data);
     printf("1. 취소 / 2. 결제 페이지로 : \n");
-    c = getc();
+    scanf("%d", &i);
     switch (c)
     {
     case 49:
@@ -182,13 +184,13 @@ B:
         break;
     }
 
-    return 0;
+    return;
 }
-
+/*
 static void Clr() { // 다들 모든 UI 및 씬 변경시마다 이거 붙이세요.
     system("cls");  // 콘솔 창 지우는 기능.
 }
-
+*/
 struct theaterAddress {
 	int addresss;	// 서울 1, 인천 2, 경기 3. 지역넘버를 매겨서 사용
 };
