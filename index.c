@@ -169,12 +169,12 @@ B:
     PrintSeats(data);
     printf("1. 취소 / 2. 결제 페이지로 : \n");
     scanf("%d", &i);
-    switch (c)
+    switch (i)
     {
-    case 49:
+    case 1:
         goto A;
         break;
-    case 50:
+    case 2:
         data->seatCnt -= n;
         // 결제 페이지....
         // 결재 따로 안만들거면, 여기서 저장하고 리턴.
