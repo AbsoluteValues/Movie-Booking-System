@@ -158,7 +158,7 @@ struct movie {
 
 
 const char* theaterAddress() {
-	int address;
+	struct theaterAddress address;
 	while(1) {
         printf("\n============ 영화관 ============\n");
         printf("== 영화관 지역을 선택해주세요 ==\n");
@@ -167,10 +167,10 @@ const char* theaterAddress() {
         printf("3. 경기\n");
         printf("0. 종료\n");
         printf(" -> ");
-        scanf("%d", &address);	
+        scanf("%d", &address.addresss);	
         printf("================================\n");
 
-        switch (address) {
+        switch (address.addresss) {
             case 1:
                 return "서울";
             case 2:
@@ -181,9 +181,7 @@ const char* theaterAddress() {
                 return "종료";  
             default:
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
-        }
-
-        
+        }  
     }
 
 }
@@ -193,6 +191,6 @@ const char* theaterAddress() {
 
 int main(void) {
 	const char* selected = theaterAddress();
-	
+	printf("선택한 지역 :  %s\n", selected);
     return 0;
 }
