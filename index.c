@@ -65,19 +65,62 @@ typedef struct {
     int runtime;
 } Movie;
 
-void BookingSeats(Cinema* data, int n);
-void BookingPeople(Cinema* data);
+
 
 static void Clr() { // 다들 모든 UI 및 씬 변경시마다 이거 붙이세요.
     system("cls");  // 콘솔 창 지우는 기능.
 }
 
+void BookingPeople(Cinema* data);
+void BookingSeats(Cinema* data, int n);
+
+int LoadMoviesFromDB(Movie* movies) {
+    int count = 0;
+    if (mysql_query(conn, "SELECT * FROM movies")) {
+        printf("쿼리 오류: %s\n", mysql_error(conn));
+        return 0;
+    }
+    res = mysql_store_result(conn);
+    while ((row = mysql_fetch_row(res)) && count < MAX_MOVIES) {
+        movies[count].num = atoi(row[0]);
+        strcpy(movies[count].title, row[1]);
+        strcpy(movies[count].rating, row[2]);
+        strcpy(movies[count].genre, row[3]);
+        movies[count].runtime = atoi(row[4]);
+        count++;
+    }
+    mysql_free_result(res);
+    return count;
+}
+
+void PrintMovies(Movie movie[]) {
+    printf("\n==== 상영 중인 영화 목록 ====\n");
+    for (int i = 0; i < MAX_MOVIES; i++) {
+        printf("%d. %s ( %s )\n", movie[i].num, movie[i].title, movie[i].rating);
+        printf(" %s / %d분 \n", movie[i].genre, movie[i].runtime);
+    }
+}
+
+int ChooseMovie(Movie movie[]) {
+    int choice;
+    printf("\n영화 번호를 선택하시오 : ");
+    scanf("%d", &choice);
+
+    for (int i = 0; i < MAX_MOVIES; i++) {
+        if (movie[i].num == choice) {
+            printf("선택한 영화 : %s\n", movie[i].title);
+            return i;
+        }
+    }
+    printf("잘못된 번호입니다.\n");
+    return -1;
+}
+
 void ResetCinema(Cinema* preset, int x, int y) {
-    int i, j;
     if (x > CinemaMaxSizeX) x = CinemaMaxSizeX;
     if (y > CinemaMaxSizeY) y = CinemaMaxSizeY;
-    for (i = 0; i < x; i++) {
-        for (j = 0; j < y; j++) {
+    for (int i = 0; i < x; i++) {
+        for (int j = 0; j < y; j++) {
             preset->seats[i][j].state = BLANK;
             preset->seats[i][j].point.x = i;
             preset->seats[i][j].point.y = j;
@@ -86,6 +129,17 @@ void ResetCinema(Cinema* preset, int x, int y) {
     preset->sizeX = x;
     preset->sizeY = y;
     preset->seatCnt = x * y;
+}
+
+void PrintSeats(Cinema* data) {
+
+void ClearChooseSeats(Cinema* data) {
+    for (int i = 0; i < data->sizeX; i++) {
+        for (int j = 0; j < data->sizeY; j++) {
+            if (data->seats[i][j].state == CHOOSE)
+                data->seats[i][j].state = BLANK;
+        }
+    }
 }
 
 void RandResetCinema(Cinema* preset, int x, int y) {
@@ -111,17 +165,6 @@ void RandResetCinema(Cinema* preset, int x, int y) {
     preset->sizeY = y;
 }
 
-void ClearChooseSeats(Cinema* data) {
-    int i, j;
-    for (i = 0; i < data->sizeX; i += 1) {
-        for (j = 0; j < data->sizeY; j += 1) {
-            if (data->seats[i][j].state == CHOOSE)
-                data->seats[i][j].state = BLANK;
-        }
-    }
-}
-
-void PrintSeats(Cinema* data) {
     // 매개변수에 이게 어느 지역의 어느 영화의 어느 관인지 구분할 수 있는 뭔가가 필요함.
     // 불러와서 좌석표 출력.
 
@@ -258,29 +301,6 @@ B:
     }
 
     return;
-}
-
-void playMovies(Movie movie[]) {
-    printf("\n==== 상영 중인 영화 목록 ====\n");
-    for (int i = 0; i < MAX_MOVIES; i++) {
-        printf("%d. %s ( %s )\n", movie[i].num, movie[i].title, movie[i].rating);
-        printf(" %s / %d분 \n", movie[i].genre, movie[i].runtime);
-    }
-}
-
-int choiceMovie(Movie movie[]) {
-    int choice;
-    printf("\n영화 번호를 선택하시오 : ");
-    scanf("%d", &choice);
-
-    for (int i = 0; i < MAX_MOVIES; i++) {
-        if (movie[i].num == choice) {
-            printf("선택한 영화 : %s\n", movie[i].title);
-            return i;
-        }
-    }
-    printf("잘못된 번호입니다.\n");
-    return -1;
 }
 
 TheaterAddress theaterAddressSeoul(TheaterAddress *address) {
@@ -501,9 +521,9 @@ int main(void) {
         {6, "명탐정 코난: 척안의 잔상", "12세 이상 관람가", "애니메이션", 109}
     };
 
-    playMovies(movie);
+    PrintMovies(movie);
     TheaterAddress *address = (TheaterAddress*)malloc(sizeof(TheaterAddress));
-    int choiceIndex = choiceMovie(movie);
+    int choiceIndex = ChooseMovie(movie);
 
     if (choiceIndex != -1) {
 
