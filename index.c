@@ -4,10 +4,36 @@
 // #include <conio.h>
 #include <stdbool.h>
 #include <time.h>
+#include <mysql/mysql.h>
 
 #define MAX_MOVIES 6
 #define CinemaMaxSizeX 10
 #define CinemaMaxSizeY 21
+
+
+
+MYSQL* conn;
+MYSQL_RES* res;
+MYSQL_ROW row;
+
+char *server = "localhost";
+char *user = "root";
+char *password = "1234";
+char *database = "restful";
+
+void InitMySQL() {
+    conn = mysql_init(NULL);
+    if (!mysql_real_connect(conn, "localhost", "root", "비밀번호", "cinema_db", 0, NULL, 0)) {
+        printf("MySQL 연결 실패: %s\n", mysql_error(conn));
+        exit(1);
+    }
+}
+
+void CloseMySQL() {
+    mysql_close(conn);
+}
+
+
 
 enum States { BLANK, CHOOSE, FULL };
 
@@ -445,6 +471,22 @@ TheaterAddress theaterAddress(TheaterAddress *address) {
     
 }
 
+void SaveBookingToDB(Cinema* cinema, const char* theater, const char* movieTitle) {
+    char query[512];
+    for (int i = 0; i < cinema->sizeX; i++) {
+        for (int j = 0; j < cinema->sizeY; j++) {
+            if (cinema->seats[i][j].state == CHOOSE || cinema->seats[i][j].state == FULL) {
+                char row = 'A' + i;
+                int col = j + 1;
+                sprintf(query, "INSERT INTO bookings (theater, movie, seat_row, seat_col) VALUES ('%s', '%s', '%c', %d)",
+                        theater, movieTitle, row, col);
+                if (mysql_query(conn, query)) {
+                    printf("좌석 저장 실패: %s\n", mysql_error(conn));
+                }
+            }
+        }
+    }
+}
 
 
 
