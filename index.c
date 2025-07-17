@@ -93,8 +93,8 @@ A:
     PrintSeats(data);
     printf("\n-1 입력시 이전 메뉴로\n- - - - - - - - - - - - - - -\n");
     printf("예약할 인원 : ");
-    scanf("%d", n);
-    if (n == -1) return;
+    scanf("%d", &n);
+    if (n == -1) return false;
     if (n < 1) {
         printf("1명 이상 선택해주세요.");
         goto A;
@@ -110,8 +110,8 @@ A:
     return true;
 }
 
-bool BookingSeats(Cinema* data, int n) {
-    char point[2];
+void BookingSeats(Cinema* data, int n) {
+    char point[20];
     Point p;
     int cnt = 0;
     char c;
@@ -128,14 +128,14 @@ A:
     printf("예약할 좌석 좌표를 입력하세요(ex:B3) : ");
     // 이렇게 받을지, 혹은 한글자씩 받으면서 계속 초기화할지...
     // 고민은 필요해 보인다.
-    gets_s(point, 2);
+    gets(point);
     p.x = (int)point[0];
-    p.y = atoi(point[1]);//a97 A65 z122 Z90
-    if (atoi(point[0]) == -1) {
+    p.y = atoi(&point[1]);//a97 A65 z122 Z90
+    if (atoi(&point[0]) == -1) {
         if (cnt > 0) {
             ClearChooseSeats(data);
         }
-        return true;
+        return 0;
     }
         
     if (p.x >= 97 && p.x <= 97 + data->sizeY && p.x <= 122 && p.y > 0 && p.y <= data->sizeY) {
@@ -166,7 +166,7 @@ B:
     Clr();
     PrintSeats(data);
     printf("1. 취소 / 2. 결제 페이지로 : \n");
-    c = getch();
+    c = getc();
     switch (c)
     {
     case 49:
@@ -182,7 +182,7 @@ B:
         break;
     }
 
-    return true;
+    return 0;
 }
 
 static void Clr() { // 다들 모든 UI 및 씬 변경시마다 이거 붙이세요.
