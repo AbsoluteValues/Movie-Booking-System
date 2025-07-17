@@ -210,21 +210,19 @@ typedef struct movie {
 } Movie;
 
 void playMovies(Movie movies[]) {
-    int cnt;
     printf("\n==== 상영 중인 영화 목록 ====\n");
-    for (int i = 0; i < cnt; i++) {
+    for (int i = 0; i < MAX_MOVIES; i++) {
         printf("%d. %s ( %s )\n", movies[i].num, movies[i].title, movies[i].rating);
         printf(" %s / %d분 \n", movies[i].genre, movies[i].runtime);
     }
 }
 
 int choiceMovie(Movie movies[]) {
-    int cnt; // 초기화 안됨.
     int choice;
     printf("\n영화 번호를 선택하시오 : ");
     scanf("%d", &choice);
 
-    for (int i = 0; i < cnt; i++) {
+    for (int i = 0; i < MAX_MOVIES; i++) {
         if (movies[i].num == choice) {
             printf("선택한 영화 : %s\n", movies[i].title);
             return i;
