@@ -46,8 +46,8 @@ bool ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정�
     int i, j;
     for (i = 0; i < data->sizeX; i += 1) {
         for (j = 0; j < data->sizeY; j += 1) {
-            if (data->seats.state == CHOOSE)
-                data->seats.state = BLANK;
+            if (data->seats[i][j].state == CHOOSE)
+                data->seats[i][j].state = BLANK;
         }
     }
     return true;
