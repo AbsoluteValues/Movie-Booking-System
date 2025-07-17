@@ -9,13 +9,13 @@
 #define CinemaMaxSizeY 21
 
 static enum States { BLANK, CHOOSE, FULL };
-struct Point {  // 필요한가?
+typedef struct PointXY {  // 필요한가?
     int x, y;
-};
-struct Seat {   // 각 좌석의 정보...
+}Point;
+typedef struct SeatData {   // 각 좌석의 정보...
     enum States state;
     Point point;
-};
+}Seat;
 typedef struct CinemaRoom {
     Seat seats[CinemaMaxSizeX][CinemaMaxSizeY]; // 좌석 2차원 배열
     int seatCnt;    // 남은 좌석 수
