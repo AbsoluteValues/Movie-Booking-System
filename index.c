@@ -16,10 +16,12 @@ MYSQL* conn;
 MYSQL_RES* res;
 MYSQL_ROW row;
 
+// MYSQL 계정 정보
 char *server = "localhost";
 char *user = "root";
 char *password = "1234";
 char *database = "cinema";
+// ^ 각자 로컬 환경에 맞게 수정 필요
 
 void InitMySQL() {
     conn = mysql_init(NULL);
@@ -34,6 +36,27 @@ void CloseMySQL() {
 }
 
 
+
+typedef struct {
+	int num;
+	char title[100];
+    char rating[50];
+	char genre[50];
+    int runtime;
+} Movie;
+
+typedef struct { 
+    char region[100];
+    char theater[100];
+} TheaterAddress;
+
+typedef struct {
+    int num;
+    int hour;
+    int minute;
+    int remain;
+    int max;
+} Schedule;
 
 enum States { BLANK, CHOOSE, FULL };
 
@@ -52,60 +75,67 @@ typedef struct {
     int sizeX, sizeY;
 } Cinema;
 
-typedef struct { 
-    char region[100];
-    char theater[100];
-} TheaterAddress;
-
-typedef struct {
-	int num;
-	char title[100];
-    char rating[50];
-	char genre[50];
-    int runtime;
-} Movie;
 
 
-
-static void Clr() { // 다들 모든 UI 및 씬 변경시마다 이거 붙이세요.
-    system("cls");  // 콘솔 창 지우는 기능.
+static void Clr() {
+    system("cls");  // 콘솔 창 지우는 기능
 }
 
 void BookingPeople(Cinema* data);
 void BookingSeats(Cinema* data, int n);
 
-int LoadMoviesFromDB(Movie* movies) {
+int LoadMoviesFromDB(Movie* movie) {
     int count = 0;
-    if (mysql_query(conn, "SELECT * FROM movies")) {
+    if (mysql_query(conn, "SELECT * FROM movie")) {
         printf("쿼리 오류: %s\n", mysql_error(conn));
         return 0;
     }
     res = mysql_store_result(conn);
     while ((row = mysql_fetch_row(res)) && count < MAX_MOVIES) {
-        movies[count].num = atoi(row[0]);
-        strcpy(movies[count].title, row[1]);
-        strcpy(movies[count].rating, row[2]);
-        strcpy(movies[count].genre, row[3]);
-        movies[count].runtime = atoi(row[4]);
+        movie[count].num = atoi(row[0]);
+        strcpy(movie[count].title, row[1]);
+        strcpy(movie[count].rating, row[2]);
+        strcpy(movie[count].genre, row[3]);
+        movie[count].runtime = atoi(row[4]);
         count++;
     }
     mysql_free_result(res);
     return count;
 }
 
-void PrintMovies(Movie movie[]) {
+void LoadBookedSeats(Cinema* cinema, const char* theater, const char* movieTitle) {
+    char query[512];
+    sprintf(query, "SELECT seat_row, seat_col FROM booking WHERE theater='%s' AND movie='%s'", theater, movieTitle);
+    
+    if (mysql_query(conn, query)) {
+        printf("예약 좌석 불러오기 실패: %s\n", mysql_error(conn));
+        return;
+    }
+
+    res = mysql_store_result(conn);
+    while ((row = mysql_fetch_row(res)) != NULL) {
+        int rowIndex = row[0][0] - 'A';  // seat_row = 'A' ~ 'J'
+        int colIndex = atoi(row[1]) - 1; // seat_col = 1 ~ 21 → 0 ~ 20
+        if (rowIndex >= 0 && rowIndex < CinemaMaxSizeX && colIndex >= 0 && colIndex < CinemaMaxSizeY) {
+            cinema->seats[rowIndex][colIndex].state = FULL;
+            cinema->seatCnt--;
+        }
+    }
+    mysql_free_result(res);
+}
+
+void PrintMovies(Movie* movie, int count) {
     printf("\n==== 상영 중인 영화 목록 ====\n");
     for (int i = 0; i < count; i++) {
         printf("%d. %s (%s) %s / %d분\n", movie[i].num, movie[i].title, movie[i].rating, movie[i].genre, movie[i].runtime);
     }
 }
 
-int ChooseMovie(Movie movie[]) {
+int ChooseMovie(Movie* movie, int count) {
     int choice;
     printf("\n영화 번호를 선택하시오 : ");
     scanf("%d", &choice);
-
-    for (int i = 0; i < MAX_MOVIES; i++) {
+    for (int i = 0; i < count; i++) {
         if (movie[i].num == choice) {
             printf("선택한 영화 : %s\n", movie[i].title);
             return i;
@@ -113,6 +143,196 @@ int ChooseMovie(Movie movie[]) {
     }
     printf("잘못된 번호입니다.\n");
     return -1;
+}
+
+bool theaterAddressSeoul(TheaterAddress *address) {
+    int choice;
+	while (1) {
+        printf("\n============ 서울 ============\n");
+        printf("== 영화관을 선택해주세요 ==\n");
+        printf("1. 가산디지털\n");
+        printf("2. 강동\n");
+        printf("3. 건대입구\n");
+        printf("4. 김포공항\n");
+        printf("5. 노원\n");
+        printf("6. 서울대입구\n");
+        printf("7. 수유\n");
+        printf("8. 신도림\n");
+        printf("0. 종료\n");
+        printf(" -> ");
+        scanf("%d", &choice);	
+        printf("================================\n");
+
+        switch (choice) {
+            case 1:
+                strcpy(address->theater, "가산디지털");
+                return true;
+                break;
+            case 2:
+                strcpy(address->theater, "강동");
+                return true;
+                break;
+            case 3:
+                strcpy(address->theater, "건대입구");
+                return true;
+                break;
+            case 4:
+                strcpy(address->theater, "김포공항");
+                return true;
+                break;
+            case 5:
+                strcpy(address->theater, "노원");
+                return true;
+                break;
+            case 6:
+                strcpy(address->theater, "서울대입구");
+                return true;
+                break;
+            case 7:
+                strcpy(address->theater, "수유");
+                return true;
+                break;
+            case 8:
+                strcpy(address->theater, "신도림");
+                return true;
+                break;
+            case 0:
+                return false;
+            default:
+                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
+        } 
+        
+        printf("선택한 영화관 :  %s\n", address->theater);
+    }
+}
+
+bool theaterAddresGyeonggi(TheaterAddress *address){
+    int choice;
+
+	while (1) {
+        printf("\n============ 경기 ============\n");
+        printf("== 영화관을 선택해주세요 ==\n");
+        printf("1. 광명\n");
+        printf("2. 광명아울렛\n");
+        printf("3. 동탄\n");
+        printf("4. 부천\n");
+        printf("5. 수원(수원역)\n");
+        printf("6. 안산\n");
+        printf("7. 안성\n");
+        printf("8. 안양\n");
+        printf("0. 종료\n");
+        printf(" -> ");
+        scanf("%d", &choice);	
+        printf("================================\n");
+
+        switch (choice) {
+            case 1:
+                strcpy(address->theater, "광명");
+                break;
+            case 2:
+                strcpy(address->theater, "광명아울렛");
+                break;
+            case 3:
+                strcpy(address->theater, "동탄");
+                break;
+            case 4:
+                strcpy(address->theater, "부천");
+                break;
+            case 5:
+                strcpy(address->theater, "수원(수원역)");
+                break;
+            case 6:
+                strcpy(address->theater, "안산");
+                break;
+            case 7:
+                strcpy(address->theater, "안성");
+                break;
+            case 8:
+                strcpy(address->theater, "안양");
+                break;
+            case 0:
+                return false;
+            default:
+                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
+        } 
+        
+        printf("선택한 영화관 :  %s\n", address->theater);
+    }
+}
+
+bool theaterAddressIncheon(TheaterAddress *address){
+    int choice;
+
+	while (1) {
+        printf("\n============ 인천 ============\n");
+        printf("== 영화관을 선택해주세요 ==\n");
+        printf("1. 부평\n");
+        printf("2. 부평갈산\n");
+        printf("3. 부평역사\n");
+        printf("0. 종료\n");
+        printf(" -> ");
+        scanf("%d", &choice);	
+        printf("================================\n");
+
+        switch (choice) {
+            case 1:
+                strcpy(address->theater, "부평");
+                return true;
+                break;
+            case 2:
+                strcpy(address->theater, "부평갈산");
+                return true;
+                break;
+            case 3:
+                strcpy(address->theater, "부평역사");
+                return true;
+                break;
+            case 0:
+                return false;
+            default:
+                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
+        } 
+        
+        printf("선택한 영화관 :  %s\n", address->theater);
+    }
+}
+
+bool theaterAddress(TheaterAddress *address) {
+    int regionChoice;
+	while (1) {
+        printf("\n============ 영화관 ============\n");
+        printf("== 영화관 지역을 선택해주세요 ==\n");
+        printf("1. 서울\n");
+        printf("2. 경기\n");
+        printf("3. 인천\n");
+        printf("0. 종료\n");
+        printf(" -> ");
+        scanf("%d", &regionChoice);	
+        printf("================================\n");
+
+        switch (regionChoice) {
+            case 1:
+                strcpy(address->region,"서울");
+                if(theaterAddressSeoul(address)) return true;
+                break;
+            case 2:
+                strcpy(address->region,"경기");
+                if(theaterAddresGyeonggi(address)) return true;
+                break;
+            case 3:
+                strcpy(address->region,"인천");
+                if(theaterAddressIncheon(address)) return true;
+                break;
+            case 0:
+                return false;
+                break;
+            default:
+                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
+                break;
+        }
+        printf("선택한 지역 :  %s\n", address->region);
+        
+    } 
 }
 
 void ResetCinema(Cinema* preset, int x, int y) {
@@ -281,7 +501,7 @@ A:
 B:
     Clr();
     PrintSeats(data);
-    printf("1. 취소 / 2. 결제 페이지로 : ");
+    printf("1. 취소 / 2. 결제하기 : ");
     scanf("%d%*c", &i);
     switch (i)
     {
@@ -290,8 +510,6 @@ B:
         break;
     case 2:
         data->seatCnt -= n;
-        // 결제 페이지....
-        // 결재 따로 안만들거면, 여기서 저장하고 리턴.
         break;
     default:
         goto B; // 재입력받음.
@@ -301,196 +519,6 @@ B:
     return;
 }
 
-bool theaterAddressSeoul(TheaterAddress *address) {
-    int choice;
-	while (1) {
-        printf("\n============ 서울 ============\n");
-        printf("== 영화관을 선택해주세요 ==\n");
-        printf("1. 가산디지털\n");
-        printf("2. 강동\n");
-        printf("3. 건대입구\n");
-        printf("4. 김포공항\n");
-        printf("5. 노원\n");
-        printf("6. 서울대입구\n");
-        printf("7. 수유\n");
-        printf("8. 신도림\n");
-        printf("0. 종료\n");
-        printf(" -> ");
-        scanf("%d", &choice);	
-        printf("================================\n");
-
-        switch (choice) {
-            case 1:
-                strcpy(address->theater, "가산디지털");
-                return true;
-                break;
-            case 2:
-                strcpy(address->theater, "강동");
-                return true;
-                break;
-            case 3:
-                strcpy(address->theater, "건대입구");
-                return true;
-                break;
-            case 4:
-                strcpy(address->theater, "김포공항");
-                return true;
-                break;
-            case 5:
-                strcpy(address->theater, "노원");
-                return true;
-                break;
-            case 6:
-                strcpy(address->theater, "서울대입구");
-                return true;
-                break;
-            case 7:
-                strcpy(address->theater, "수유");
-                return true;
-                break;
-            case 8:
-                strcpy(address->theater, "신도림");
-                return true;
-                break;
-            case 0:
-                return false;
-            default:
-                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
-        } 
-        
-        printf("선택한 영화관 :  %s\n", address->theater);
-    }
-}
-
-bool theaterAddressIncheon(TheaterAddress *address){
-    int choice;
-
-	while (1) {
-        printf("\n============ 인천 ============\n");
-        printf("== 영화관을 선택해주세요 ==\n");
-        printf("1. 부평\n");
-        printf("2. 부평갈산\n");
-        printf("3. 부평역사\n");
-        printf("0. 종료\n");
-        printf(" -> ");
-        scanf("%d", &choice);	
-        printf("================================\n");
-
-        switch (choice) {
-            case 1:
-                strcpy(address->theater, "부평");
-                return true;
-                break;
-            case 2:
-                strcpy(address->theater, "부평갈산");
-                return true;
-                break;
-            case 3:
-                strcpy(address->theater, "부평역사");
-                return true;
-                break;
-            case 0:
-                return false;
-            default:
-                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
-        } 
-        
-        printf("선택한 영화관 :  %s\n", address->theater);
-    }
-}
-
-bool theaterAddresGyeonggi(TheaterAddress *address){
-    int choice;
-
-	while (1) {
-        printf("\n============ 경기 ============\n");
-        printf("== 영화관을 선택해주세요 ==\n");
-        printf("1. 광명\n");
-        printf("2. 광명아울렛\n");
-        printf("3. 동탄\n");
-        printf("4. 부천\n");
-        printf("5. 수원(수원역)\n");
-        printf("6. 안산\n");
-        printf("7. 안성\n");
-        printf("8. 안양\n");
-        printf("0. 종료\n");
-        printf(" -> ");
-        scanf("%d", &choice);	
-        printf("================================\n");
-
-        switch (choice) {
-            case 1:
-                strcpy(address->theater, "광명");
-                break;
-            case 2:
-                strcpy(address->theater, "광명아울렛");
-                break;
-            case 3:
-                strcpy(address->theater, "동탄");
-                break;
-            case 4:
-                strcpy(address->theater, "부천");
-                break;
-            case 5:
-                strcpy(address->theater, "수원(수원역)");
-                break;
-            case 6:
-                strcpy(address->theater, "안산");
-                break;
-            case 7:
-                strcpy(address->theater, "안성");
-                break;
-            case 8:
-                strcpy(address->theater, "안양");
-                break;
-            case 0:
-                return false;
-            default:
-                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
-        } 
-        
-        printf("선택한 영화관 :  %s\n", address->theater);
-    }
-}
-
-bool theaterAddress(TheaterAddress *address) {
-    int regionChoice;
-	while (1) {
-        printf("\n============ 영화관 ============\n");
-        printf("== 영화관 지역을 선택해주세요 ==\n");
-        printf("1. 서울\n");
-        printf("2. 인천\n");
-        printf("3. 경기\n");
-        printf("0. 종료\n");
-        printf(" -> ");
-        scanf("%d", &regionChoice);	
-        printf("================================\n");
-
-        switch (regionChoice) {
-            case 1:
-                strcpy(address->region,"서울");
-                if(theaterAddressSeoul(address)) return true;
-                break;
-            case 2:
-                strcpy(address->region,"인천");
-                if(theaterAddressIncheon(address)) return true;
-                break;
-            case 3:
-                strcpy(address->region,"경기");
-                if(theaterAddresGyeonggi(address)) return true;
-                break;
-            case 0:
-                return false;
-                break;
-            default:
-                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
-                break;
-        }
-        printf("선택한 지역 :  %s\n", address->region);
-        
-    } 
-}
-
 void SaveBookingToDB(Cinema* cinema, const char* theater, const char* movieTitle) {
     char query[512];
     for (int i = 0; i < cinema->sizeX; i++) {
@@ -498,8 +526,8 @@ void SaveBookingToDB(Cinema* cinema, const char* theater, const char* movieTitle
             if (cinema->seats[i][j].state == CHOOSE || cinema->seats[i][j].state == FULL) {
                 char row = 'A' + i;
                 int col = j + 1;
-                sprintf(query, "INSERT INTO bookings (theater, movie, seat_row, seat_col) VALUES ('%s', '%s', '%c', %d)",
-                        theater, movieTitle, row, col);
+                sprintf(query, "INSERT INTO booking (theater, movie, seat_row, seat_col) VALUES ('%s', '%s', '%c', %d)",
+                    theater, movieTitle, row, col);
                 if (mysql_query(conn, query)) {
                     printf("좌석 저장 실패: %s\n", mysql_error(conn));
                 }
@@ -512,29 +540,30 @@ void SaveBookingToDB(Cinema* cinema, const char* theater, const char* movieTitle
 
 int main(void) {
 
-    Movie movie[MAX_MOVIES] = {
-        {1, "F1 더 무비", "12세 이상 관람가", "액션, 드라마", 155},
-        {2, "킹 오브 킹스", "전체 이용가", "애니메이션", 101},
-        {3, "슈퍼맨", "12세 이상 관람가", "액션", 129},
-        {4, "쥬라기 월드: 새로운 시작", "12세 이상 관람가", "액션", 129},
-        {5, "노이즈", "15세 이상 관람가", "모험, 액션, 공포, 스릴러", 133},
-        {6, "명탐정 코난: 척안의 잔상", "12세 이상 관람가", "애니메이션", 109}
-    };
+    InitMySQL();
 
-    PrintMovies(movie);
+    Movie movie[MAX_MOVIES];
+    int movieCount = LoadMoviesFromDB(movie);
+    if (movieCount == 0) return 1;
+
+    PrintMovies(movie, movieCount);
+    int choice = ChooseMovie(movie, movieCount);
+    if (choice == -1) return 1;
+
     TheaterAddress *address = (TheaterAddress*)malloc(sizeof(TheaterAddress));
-    int choiceIndex = ChooseMovie(movie);
-
-    if (choiceIndex != -1) {
-
-    }
-
     theaterAddress(address);
-	
+
     Cinema* preset = (Cinema*)malloc(sizeof(Cinema));
     ResetCinema(preset, 10, 21);
+    LoadBookedSeats(preset, address->theater, movie[choice].title);
     BookingPeople(preset);
+
+    SaveBookingToDB(preset, address->theater, movie[choice].title);
+    printf("예매를 완료 했습니다.\n");
+
     free(preset);
+    free(address);
+    CloseMySQL();
 
     return 0;
 }
