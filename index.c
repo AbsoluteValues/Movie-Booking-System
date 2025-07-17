@@ -5,21 +5,42 @@
 #include <stdbool.h>
 
 #define MAX_MOVIES 6
+#define CinemaMaxSizeX 10
+#define CinemaMaxSizeY 21
 
 static enum States { BLANK, CHOOSE, FULL };
-struct Point {
+struct Point {  // 필요한가?
     int x, y;
 };
-struct Seat {
+struct Seat {   // 각 좌석의 정보...
     enum States state;
-    Point pnt;
+    Point point;
 };
 typedef struct CinemaRoom {
-    Seat* seats;
-    int seatCnt;
-    int sizeX, sizeY;
+    Seat seats[CinemaMaxSizeX][CinemaMaxSizeY]; // 좌석 2차원 배열
+    int seatCnt;    // 남은 좌석 수
+    int sizeX, sizeY;   // 영화관 크기
     // prevScene;
 }Cinema;
+
+Cinema* preset;
+bool ResetCinema(Cinema* preset, int x, int y) {
+    int i, j;
+    if (x > CinemaMaxSizeX) x = CinemaMaxSizeX;
+    if (y > CinemaMaxSizeY) y = CinemaMaxSizeY;
+    for(i = 0; i < x; i++){
+        for (j = 0; j < y; j++) {
+            preset->seats[i][j].state = BLANK;
+            preset->seats[i][j].point.x = i;
+            preset->seats[i][j].point.y = j;
+        }
+    }
+    preset->sizeX = x;
+    preset->sizeY = y;
+    preset->seatCnt = x * y;
+
+    return true;
+}
 
 bool ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정별로 구분할거라면... 어쩌구저쩌구
     int i, j;
@@ -105,6 +126,8 @@ A:
     PrintSeats(data);
     printf("\n-1 입력시 이전 메뉴로\n- - - - - - - - - - - - - - -\n");
     printf("예약할 좌석 좌표를 입력하세요(ex:B3) : ");
+    // 이렇게 받을지, 혹은 한글자씩 받으면서 계속 초기화할지...
+    // 고민은 필요해 보인다.
     gets_s(point, 2);
     p.x = (int)point[0];
     p.y = atoi(point[1]);//a97 A65 z122 Z90
@@ -150,6 +173,7 @@ B:
         goto A;
         break;
     case 50:
+        data->seatCnt -= n;
         // 결제 페이지....
         // 결재 따로 안만들거면, 여기서 저장하고 리턴.
         break;
