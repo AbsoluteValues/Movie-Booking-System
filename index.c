@@ -181,13 +181,13 @@ void PrintSeats(Cinema* data) {
         for (j = 0; j < data->sizeY; j += 1) {
             switch (data->seats[i][j].state)
             {
-            case 0:
+            case BLANK:
                 printf("□  ");
                 break;
-            case 1:
+            case CHOOSE:
                 printf("▣  ");
                 break;
-            case 2:
+            case FULL:
                 printf("■  ");
                 break;
             default:
