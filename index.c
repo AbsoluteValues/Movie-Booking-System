@@ -19,7 +19,7 @@ MYSQL_ROW row;
 char *server = "localhost";
 char *user = "root";
 char *password = "1234";
-char *database = "restful";
+char *database = "cinema";
 
 void InitMySQL() {
     conn = mysql_init(NULL);
