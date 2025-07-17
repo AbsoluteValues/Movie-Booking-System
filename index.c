@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <conio.h>
+#include <stdbool.h>
 
 #define MAX_MOVIES 6
 
@@ -11,7 +12,7 @@ struct Point {
 };
 struct Seat
 {
-    States state;
+    enum States state;
     Point pnt;
 };
 typedef struct CinemaRoom {
@@ -134,7 +135,7 @@ A:
     if (cnt < n) goto A;
     Clr();
     PrintSeats(data);
-    printf("1. 취소 / 2. 결제 페이지로.")
+    printf("1. 취소 / 2. 결제 페이지로.");
     // getchar인가 이거로 바꾸는게 나을 것 같은데... 
     // 취소하면 A, 아니면 진행
 }
@@ -156,11 +157,42 @@ struct movie {
 };
 
 
+const char* theaterAddress() {
+	int address;
+	while(1) {
+        printf("\n============ 영화관 ============\n");
+	    printf("== 영화관 지역을 선택해주세요 ==\n");
+	    printf("1. 서울\n");
+	    printf("2. 인천\n");
+	    printf("3. 경기\n");
+	    printf("0. 종료\n");
+	    printf(" -> ");
+	    scanf("%d", &address);	
+        printf("================================\n");
+
+        switch (address) {
+            case 1:
+                return "서울";
+             case 2:
+                 return "인천";
+            case 3:
+                 return "경기";
+            case 0:
+                 return "종료";  
+            default:
+                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
+        }
+
+        
+    }
+
+}
 
 
 
 
 int main(void) {
+	const char* selected = theaterAddress();
 	
     return 0;
 }
