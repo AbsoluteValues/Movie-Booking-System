@@ -303,9 +303,9 @@ B:
     return;
 }
 
-TheaterAddress theaterAddressSeoul(TheaterAddress *address) {
+bool theaterAddressSeoul(TheaterAddress *address) {
     int choice;
-	do {
+	while (1) {
         printf("\n============ 서울 ============\n");
         printf("== 영화관을 선택해주세요 ==\n");
         printf("1. 가산디지털\n");
@@ -324,44 +324,51 @@ TheaterAddress theaterAddressSeoul(TheaterAddress *address) {
         switch (choice) {
             case 1:
                 strcpy(address->theater, "가산디지털");
+                return true;
                 break;
             case 2:
                 strcpy(address->theater, "강동");
+                return true;
                 break;
             case 3:
                 strcpy(address->theater, "건대입구");
+                return true;
                 break;
             case 4:
                 strcpy(address->theater, "김포공항");
+                return true;
                 break;
             case 5:
                 strcpy(address->theater, "노원");
+                return true;
                 break;
             case 6:
                 strcpy(address->theater, "서울대입구");
+                return true;
                 break;
             case 7:
                 strcpy(address->theater, "수유");
+                return true;
                 break;
             case 8:
                 strcpy(address->theater, "신도림");
+                return true;
                 break;
             case 0:
-                return *address;
+                return false;
             default:
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
         } 
         
         printf("선택한 영화관 :  %s\n", address->theater);
-    }while(choice == 0);
-    return *address;
+    }
     
 }
 
-TheaterAddress theaterAddressIncheon(TheaterAddress *address){
+bool theaterAddressIncheon(TheaterAddress *address){
     int choice;
 
-	do {
+	while (1) {
         printf("\n============ 인천 ============\n");
         printf("== 영화관을 선택해주세요 ==\n");
         printf("1. 부평\n");
@@ -375,29 +382,30 @@ TheaterAddress theaterAddressIncheon(TheaterAddress *address){
         switch (choice) {
             case 1:
                 strcpy(address->theater, "부평");
+                return true;
                 break;
             case 2:
                 strcpy(address->theater, "부평갈산");
+                return true;
                 break;
             case 3:
                 strcpy(address->theater, "부평역사");
+                return true;
                 break;
             case 0:
-                return *address;
+                return false;
             default:
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
         } 
         
         printf("선택한 영화관 :  %s\n", address->theater);
-    }while(choice != 0);
-    return *address;
-
+    }
 }
 
-TheaterAddress theaterAddresGyeonggi(TheaterAddress *address){
+bool theaterAddresGyeonggi(TheaterAddress *address){
     int choice;
 
-	do {
+	while (1) {
         printf("\n============ 경기 ============\n");
         printf("== 영화관을 선택해주세요 ==\n");
         printf("1. 광명\n");
@@ -439,20 +447,18 @@ TheaterAddress theaterAddresGyeonggi(TheaterAddress *address){
                 strcpy(address->theater, "안양");
                 break;
             case 0:
-                return *address;
+                return false;
             default:
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
         } 
         
         printf("선택한 영화관 :  %s\n", address->theater);
-    }while(choice != 0);
-    return *address;
-
+    }
 }
 
-TheaterAddress theaterAddress(TheaterAddress *address) {
+bool theaterAddress(TheaterAddress *address) {
     int regionChoice;
-	do {
+	while (1) {
         printf("\n============ 영화관 ============\n");
         printf("== 영화관 지역을 선택해주세요 ==\n");
         printf("1. 서울\n");
@@ -466,18 +472,18 @@ TheaterAddress theaterAddress(TheaterAddress *address) {
         switch (regionChoice) {
             case 1:
                 strcpy(address->region,"서울");
-                theaterAddressSeoul(address);
+                if(theaterAddressSeoul(address)) return true;
                 break;
             case 2:
                 strcpy(address->region,"인천");
-                theaterAddressIncheon(address);
+                if(theaterAddressIncheon(address)) return true;
                 break;
             case 3:
                 strcpy(address->region,"경기");
-                theaterAddresGyeonggi(address);
+                if(theaterAddresGyeonggi(address)) return true;
                 break;
             case 0:
-                exit(0);
+                return false;
                 break;
             default:
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
@@ -485,11 +491,9 @@ TheaterAddress theaterAddress(TheaterAddress *address) {
         }
         printf("선택한 지역 :  %s\n", address->region);
         
-    }while(regionChoice != 0);
-    
-    return *address;
-    
+    } 
 }
+
 
 void SaveBookingToDB(Cinema* cinema, const char* theater, const char* movieTitle) {
     char query[512];
