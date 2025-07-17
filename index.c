@@ -50,14 +50,6 @@ typedef struct {
     char theater[100];
 } TheaterAddress;
 
-typedef struct {
-    int num;
-    int hour;
-    int minute;
-    int remain;
-    int max;
-} Schedule;
-
 enum States { BLANK, CHOOSE, FULL };
 
 typedef struct {
