@@ -23,7 +23,7 @@ char *database = "cinema";
 
 void InitMySQL() {
     conn = mysql_init(NULL);
-    if (!mysql_real_connect(conn, "localhost", "root", "비밀번호", "cinema_db", 0, NULL, 0)) {
+    if (!mysql_real_connect(conn, server, user, password, database, 0, NULL, 0)) {
         printf("MySQL 연결 실패: %s\n", mysql_error(conn));
         exit(1);
     }
