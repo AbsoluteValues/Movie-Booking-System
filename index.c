@@ -4,7 +4,7 @@
 // #include <conio.h>
 #include <stdbool.h>
 #include <time.h>
-#include <mysql/mysql.h>
+#include "mysql_client/include/mysql.h"
 
 #define MAX_MOVIES 6
 #define CinemaMaxSizeX 10
