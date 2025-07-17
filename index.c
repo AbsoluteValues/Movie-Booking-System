@@ -199,8 +199,32 @@ struct movie {
     char rating[50];    //등급
 	char genre[50];     //장르
     int runtime;    //상영시간
-};
+}; 
 
+void playMovies(Movie movies[]) {
+    int cnt;
+    printf("\n==== 상영 중인 영화 목록 ====\n");
+    for (int i = 0; i < cnt; i++) {
+        printf("%d. %s ( %s )\n", movies[i].num, movies[i].title, movies[i].rating);
+        printf(" %s / %d분 \n", movies[i].genre, movies[i].runtime);
+    }
+}
+
+int choiceMovie(Movie movies[]) {
+    int cnt;
+    int choice;
+    printf("\n영화 번호를 선택하시오 : ");
+    scanf("%d", &choice);
+
+    for (int i = 0; i < cnt; i++) {
+        if (movies[i].num == choice) {
+            printf("선택한 영화 : %s\n", movies[i].title);
+            return i;
+        }
+    }
+    printf("잘못된 번호입니다.\n");
+    return -1;
+}
 
 const char* theaterAddress() {
 	struct theaterAddress address;
@@ -235,6 +259,24 @@ const char* theaterAddress() {
 
 
 int main(void) {
+
+    Movie movies[MAX_MOVIES] = {
+        {1, "F1 더 무비", "12세 이상 관람가", "액션, 드라마", 155},
+        {2, "킹 오브 킹스", "전체 이용가", "애니메이션", 101},
+        {3, "슈퍼맨", "12세 이상 관람가", "12세 이상 관람가", "액션", 129},
+        {4, "쥬라기 월드: 새로운 시작", "12세 이상 관람가", "액션", 129},
+        {5, "노이즈", "15세 이상 관람가", "모험, 액션, 공포, 스릴러", 133},
+        {6, "명탐정 코난: 척안의 잔상", "12세 이상 관람가", "애니메이션", 109}
+    };
+
+    playMovies(movies, MAX_MOVIES);
+
+    int choiceIndex = choiceMovie(movies, MAX_MOVIES);
+
+    if (choiceIndex != -1) {
+
+    }
+
 	const char* selected = theaterAddress();
 	printf("선택한 지역 :  %s\n", selected);
     return 0;
