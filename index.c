@@ -362,7 +362,6 @@ bool theaterAddressSeoul(TheaterAddress *address) {
         
         printf("선택한 영화관 :  %s\n", address->theater);
     }
-    
 }
 
 bool theaterAddressIncheon(TheaterAddress *address){
@@ -493,7 +492,6 @@ bool theaterAddress(TheaterAddress *address) {
         
     } 
 }
-
 
 void SaveBookingToDB(Cinema* cinema, const char* theater, const char* movieTitle) {
     char query[512];
