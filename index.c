@@ -269,9 +269,9 @@ int main(void) {
         {6, "명탐정 코난: 척안의 잔상", "12세 이상 관람가", "애니메이션", 109}
     };
 
-    playMovies(movies, MAX_MOVIES);
+    playMovies(movies);
 
-    int choiceIndex = choiceMovie(movies, MAX_MOVIES);
+    int choiceIndex = choiceMovie(movies);
 
     if (choiceIndex != -1) {
 
