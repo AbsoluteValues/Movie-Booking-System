@@ -131,8 +131,6 @@ void ResetCinema(Cinema* preset, int x, int y) {
     preset->seatCnt = x * y;
 }
 
-void PrintSeats(Cinema* data) {
-
 void ClearChooseSeats(Cinema* data) {
     for (int i = 0; i < data->sizeX; i++) {
         for (int j = 0; j < data->sizeY; j++) {
@@ -165,6 +163,7 @@ void RandResetCinema(Cinema* preset, int x, int y) {
     preset->sizeY = y;
 }
 
+void PrintSeats(Cinema* data) {
     // 매개변수에 이게 어느 지역의 어느 영화의 어느 관인지 구분할 수 있는 뭔가가 필요함.
     // 불러와서 좌석표 출력.
 
