@@ -193,13 +193,13 @@ struct theaterAddress {
 	int addresss;	// 서울 1, 인천 2, 경기 3. 지역넘버를 매겨서 사용
 };
 
-struct movie {
+typedef struct movie {
 	int num;    //영화번호
 	char title[100];    //제목
     char rating[50];    //등급
 	char genre[50];     //장르
     int runtime;    //상영시간
-}; 
+} Movie;
 
 void playMovies(Movie movies[]) {
     int cnt;
