@@ -23,14 +23,14 @@ typedef struct CinemaRoom {
     // prevScene;
 }Cinema;
 void BookingSeats(Cinema* data, int n);
-bool BookingPeople(Cinema* data);
+void BookingPeople(Cinema* data);
 static void Clr() { // 다들 모든 UI 및 씬 변경시마다 이거 붙이세요.
     system("cls");  // 콘솔 창 지우는 기능.
 }
 char lineX[CinemaMaxSizeX] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' };
 int lineY[CinemaMaxSizeY] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 };
 
-bool ResetCinema(Cinema* preset, int x, int y) {
+void ResetCinema(Cinema* preset, int x, int y) {
     int i, j;
     if (x > CinemaMaxSizeX) x = CinemaMaxSizeX;
     if (y > CinemaMaxSizeY) y = CinemaMaxSizeY;
@@ -44,11 +44,9 @@ bool ResetCinema(Cinema* preset, int x, int y) {
     preset->sizeX = x;
     preset->sizeY = y;
     preset->seatCnt = x * y;
-
-    return true;
 }
 
-bool ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정별로 구분할거라면... 어쩌구저쩌구
+void ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정별로 구분할거라면... 어쩌구저쩌구
     int i, j;
     for (i = 0; i < data->sizeX; i += 1) {
         for (j = 0; j < data->sizeY; j += 1) {
@@ -56,10 +54,9 @@ bool ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정�
                 data->seats[i][j].state = BLANK;
         }
     }
-    return true;
 }
 
-bool PrintSeats(Cinema* data) {
+void PrintSeats(Cinema* data) {
     // 매개변수에 이게 어느 지역의 어느 영화의 어느 관인지 구분할 수 있는 뭔가가 필요함.
     // 불러와서 좌석표 출력.
     Clr();
@@ -90,10 +87,9 @@ bool PrintSeats(Cinema* data) {
         printf("\n");
     }
     printf("\n==================================================\n");
-    return true;
 }
 
-bool BookingPeople(Cinema* data) {
+void BookingPeople(Cinema* data) {
     // 좌석목록 띄운 채로 몇명 예약할지 결정.
     // 뒤로가기라면 시간/관 선택 창으로.
     // 인원이 0명 초과일때만 BookingSeats 로 진행.
@@ -104,7 +100,7 @@ A:
     printf("\n-1 입력시 이전 메뉴로\n- - - - - - - - - - - - - - -\n");
     printf("예약할 인원 : ");
     scanf("%d%*c", &n);
-    if (n == -1) return false;
+    if (n == -1) return;
     if (n < 1) {
         printf("1명 이상 선택해주세요.\n");
         system("pause");
@@ -118,8 +114,6 @@ A:
     else {
         BookingSeats(data, n);
     }
-
-    return true;
 }
 
 void BookingSeats(Cinema* data, int n) {
