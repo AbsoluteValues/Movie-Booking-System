@@ -493,7 +493,7 @@ A:
 B:
     Clr();
     PrintSeats(data);
-    printf("1. 취소 / 2. 결제하기 : ");
+    printf("1. 취소 / 2. 예매하기 : ");
     scanf("%d%*c", &i);
     switch (i)
     {
@@ -515,7 +515,7 @@ void SaveBookingToDB(Cinema* cinema, const char* theater, const char* movieTitle
     char query[512];
     for (int i = 0; i < cinema->sizeX; i++) {
         for (int j = 0; j < cinema->sizeY; j++) {
-            if (cinema->seats[i][j].state == CHOOSE || cinema->seats[i][j].state == FULL) {
+            if (cinema->seats[i][j].state == CHOOSE) {
                 char row = 'A' + i;
                 int col = j + 1;
                 sprintf(query, "INSERT INTO booking (theater, movie, seat_row, seat_col) VALUES ('%s', '%s', '%c', %d)",
