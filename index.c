@@ -3,6 +3,7 @@
 #include <string.h>
 #include <conio.h>
 #include <stdbool.h>
+#include <time.h>
 
 #define MAX_MOVIES 6
 #define CinemaMaxSizeX 10
@@ -44,6 +45,29 @@ void ResetCinema(Cinema* preset, int x, int y) {
     preset->sizeX = x;
     preset->sizeY = y;
     preset->seatCnt = x * y;
+}
+
+void RandResetCinema(Cinema* preset, int x, int y) {
+    int i, j;
+    preset->seatCnt = x * y;
+    srand((unsigned)time(NULL));
+    if (x > CinemaMaxSizeX) x = CinemaMaxSizeX;
+    if (y > CinemaMaxSizeY) y = CinemaMaxSizeY;
+    for (i = 0; i < x; i++) {
+        for (j = 0; j < y; j++) {
+            if (rand % 4 > 2){
+                preset->seats[i][j].state = FULL;
+                preset->seatCnt -= 1;
+            }
+            else {
+                preset->seats[i][j].state = BLANK;
+            }
+            preset->seats[i][j].point.x = i;
+            preset->seats[i][j].point.y = j;
+        }
+    }
+    preset->sizeX = x;
+    preset->sizeY = y;
 }
 
 void ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정별로 구분할거라면... 어쩌구저쩌구
