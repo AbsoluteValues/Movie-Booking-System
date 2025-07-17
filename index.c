@@ -255,7 +255,6 @@ const char* theaterAddress() {
             case 3:
                 return "경기";
             case 0:
-                return "종료"; 
                 break; 
             default:
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
