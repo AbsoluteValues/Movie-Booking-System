@@ -5,22 +5,43 @@
 #include <stdbool.h>
 
 #define MAX_MOVIES 6
+#define CinemaMaxSizeX 10
+#define CinemaMaxSizeY 21
 
 static enum States { BLANK, CHOOSE, FULL };
-struct Point {
+struct Point {  // 필요한가?
     int x, y;
 };
-struct Seat
-{
+struct Seat {   // 각 좌석의 정보...
     enum States state;
-    Point pnt;
+    Point point;
 };
 typedef struct CinemaRoom {
-    Seat* seats;
-    int seatCnt;
-    int sizeX, sizeY;
+    Seat seats[CinemaMaxSizeX][CinemaMaxSizeY]; // 좌석 2차원 배열
+    int seatCnt;    // 남은 좌석 수
+    int sizeX, sizeY;   // 영화관 크기
     // prevScene;
 }Cinema;
+
+Cinema* preset;
+bool ResetCinema(Cinema* preset, int x, int y) {
+    int i, j;
+    if (x > CinemaMaxSizeX) x = CinemaMaxSizeX;
+    if (y > CinemaMaxSizeY) y = CinemaMaxSizeY;
+    for(i = 0; i < x; i++){
+        for (j = 0; j < y; j++) {
+            preset->seats[i][j].state = BLANK;
+            preset->seats[i][j].point.x = i;
+            preset->seats[i][j].point.y = j;
+        }
+    }
+    preset->sizeX = x;
+    preset->sizeY = y;
+    preset->seatCnt = x * y;
+
+    return true;
+}
+
 bool ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정별로 구분할거라면... 어쩌구저쩌구
     int i, j;
     for (i = 0; i < data->sizeX; i += 1) {
@@ -31,6 +52,7 @@ bool ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정�
     }
     return true;
 }
+
 bool PrintSeats(Cinema* data) {
     // 매개변수에 이게 어느 지역의 어느 영화의 어느 관인지 구분할 수 있는 뭔가가 필요함.
     // 불러와서 좌석표 출력.
@@ -60,6 +82,7 @@ bool PrintSeats(Cinema* data) {
     printf("\n==================================================\n");
     return true;
 }
+
 bool BookingPeople(Cinema* data) {
     // 좌석목록 띄운 채로 몇명 예약할지 결정.
     // 뒤로가기라면 시간/관 선택 창으로.
@@ -83,11 +106,15 @@ A:
     else {
         BookingSeats(data, n);
     }
+
+    return true;
 }
+
 bool BookingSeats(Cinema* data, int n) {
     char point[2];
     Point p;
     int cnt = 0;
+    char c;
     // 몇명 예약할지 받아오고 좌석목록 띄움.
     // 좌표 입력. 동시에 뒤로가기도 받아야 함.
     // 뒤로가기라면 BookingPeople 로.
@@ -99,6 +126,8 @@ A:
     PrintSeats(data);
     printf("\n-1 입력시 이전 메뉴로\n- - - - - - - - - - - - - - -\n");
     printf("예약할 좌석 좌표를 입력하세요(ex:B3) : ");
+    // 이렇게 받을지, 혹은 한글자씩 받으면서 계속 초기화할지...
+    // 고민은 필요해 보인다.
     gets_s(point, 2);
     p.x = (int)point[0];
     p.y = atoi(point[1]);//a97 A65 z122 Z90
@@ -133,15 +162,31 @@ A:
     }
     else printf("선택할 수 없는 좌석입니다.\n");
     if (cnt < n) goto A;
+B:
     Clr();
     PrintSeats(data);
-    printf("1. 취소 / 2. 결제 페이지로.");
-    // getchar인가 이거로 바꾸는게 나을 것 같은데... 
-    // 취소하면 A, 아니면 진행
+    printf("1. 취소 / 2. 결제 페이지로 : \n");
+    c = getch();
+    switch (c)
+    {
+    case 49:
+        goto A;
+        break;
+    case 50:
+        data->seatCnt -= n;
+        // 결제 페이지....
+        // 결재 따로 안만들거면, 여기서 저장하고 리턴.
+        break;
+    default:
+        goto B; // 재입력받음.
+        break;
+    }
+
+    return true;
 }
 
 static void Clr() { // 다들 모든 UI 및 씬 변경시마다 이거 붙이세요.
-    system("cls");
+    system("cls");  // 콘솔 창 지우는 기능.
 }
 
 struct theaterAddress {
@@ -182,32 +227,30 @@ int choiceMovie(Movie movies[]) {
 }
 
 const char* theaterAddress() {
-	int address;
+	struct theaterAddress address;
 	while(1) {
         printf("\n============ 영화관 ============\n");
-	    printf("== 영화관 지역을 선택해주세요 ==\n");
-	    printf("1. 서울\n");
-	    printf("2. 인천\n");
-	    printf("3. 경기\n");
-	    printf("0. 종료\n");
-	    printf(" -> ");
-	    scanf("%d", &address);	
+        printf("== 영화관 지역을 선택해주세요 ==\n");
+        printf("1. 서울\n");
+        printf("2. 인천\n");
+        printf("3. 경기\n");
+        printf("0. 종료\n");
+        printf(" -> ");
+        scanf("%d", &address.addresss);	
         printf("================================\n");
 
-        switch (address) {
+        switch (address.addresss) {
             case 1:
                 return "서울";
-             case 2:
-                 return "인천";
+            case 2:
+                return "인천";
             case 3:
-                 return "경기";
+                return "경기";
             case 0:
-                 return "종료";  
+                return "종료";  
             default:
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
-        }
-
-        
+        }  
     }
 
 }
@@ -235,6 +278,6 @@ int main(void) {
     }
 
 	const char* selected = theaterAddress();
-	
+	printf("선택한 지역 :  %s\n", selected);
     return 0;
 }
