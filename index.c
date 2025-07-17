@@ -10,8 +10,7 @@ static enum States { BLANK, CHOOSE, FULL };
 struct Point {
     int x, y;
 };
-struct Seat
-{
+struct Seat {
     enum States state;
     Point pnt;
 };
@@ -21,6 +20,7 @@ typedef struct CinemaRoom {
     int sizeX, sizeY;
     // prevScene;
 }Cinema;
+
 bool ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정별로 구분할거라면... 어쩌구저쩌구
     int i, j;
     for (i = 0; i < data->sizeX; i += 1) {
@@ -31,6 +31,7 @@ bool ClearChooseSeats(Cinema* data) { // 현재는 그냥 밀어버림. 계정�
     }
     return true;
 }
+
 bool PrintSeats(Cinema* data) {
     // 매개변수에 이게 어느 지역의 어느 영화의 어느 관인지 구분할 수 있는 뭔가가 필요함.
     // 불러와서 좌석표 출력.
@@ -60,6 +61,7 @@ bool PrintSeats(Cinema* data) {
     printf("\n==================================================\n");
     return true;
 }
+
 bool BookingPeople(Cinema* data) {
     // 좌석목록 띄운 채로 몇명 예약할지 결정.
     // 뒤로가기라면 시간/관 선택 창으로.
@@ -83,11 +85,15 @@ A:
     else {
         BookingSeats(data, n);
     }
+
+    return true;
 }
+
 bool BookingSeats(Cinema* data, int n) {
     char point[2];
     Point p;
     int cnt = 0;
+    char c;
     // 몇명 예약할지 받아오고 좌석목록 띄움.
     // 좌표 입력. 동시에 뒤로가기도 받아야 함.
     // 뒤로가기라면 BookingPeople 로.
@@ -133,15 +139,30 @@ A:
     }
     else printf("선택할 수 없는 좌석입니다.\n");
     if (cnt < n) goto A;
+B:
     Clr();
     PrintSeats(data);
-    printf("1. 취소 / 2. 결제 페이지로.");
-    // getchar인가 이거로 바꾸는게 나을 것 같은데... 
-    // 취소하면 A, 아니면 진행
+    printf("1. 취소 / 2. 결제 페이지로 : \n");
+    c = getch();
+    switch (c)
+    {
+    case 49:
+        goto A;
+        break;
+    case 50:
+        // 결제 페이지....
+        // 결재 따로 안만들거면, 여기서 저장하고 리턴.
+        break;
+    default:
+        goto B; // 재입력받음.
+        break;
+    }
+
+    return true;
 }
 
 static void Clr() { // 다들 모든 UI 및 씬 변경시마다 이거 붙이세요.
-    system("cls");
+    system("cls");  // 콘솔 창 지우는 기능.
 }
 
 struct theaterAddress {
