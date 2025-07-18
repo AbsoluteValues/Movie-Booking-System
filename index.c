@@ -544,7 +544,7 @@ bool SearchAddress(TheaterAddress* ad) {
     char c[20];
 
 A:
-   Clr();
+    Clr();
     printf("영화관 위치 검색(-1 입력 시 이전 메뉴로) : ");
     fgets(c, sizeof(char) * 20, stdin);
     c[strlen(c) - 1] = '\0';
