@@ -442,7 +442,8 @@ A:
         goto A;
     }
     else {
-        BookingSeats(data, n);
+        int result = BookingSeats(data, n);
+        if (result == -1) goto A;
     }
     return 1;
 }
@@ -472,7 +473,7 @@ A:
         if (cnt > 0) {
             ClearChooseSeats(data);
         }
-        return 0;
+        return -1;
     }
     if (p.x >= 97 && p.x <= 97 + data->sizeX && p.x <= 122 && p.y >= 0 && p.y < data->sizeY) {
         if (data->seats[p.x - 97][p.y].state == BLANK) {
