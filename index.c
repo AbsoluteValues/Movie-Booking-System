@@ -551,7 +551,6 @@ A:
     c[strlen(c) - 1] = '\0';
     if (atoi(&c[0]) == -1)
         return false;
-    printf("%d\n", atoi(&c[0]));
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 8; j++) {
             if (strcmp(region[i][j], " ") == 0)
