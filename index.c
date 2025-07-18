@@ -128,7 +128,7 @@ int ChooseMovie(Movie* movie, int count) {
     ;
     int choice;
     printf("\n영화 번호를 선택하시오(종료: -1) : ");
-    scanf("%d", &choice);
+    scanf("%d%*c", &choice);
     if (choice == -1) return -1;
     for (int i = 0; i < count; i++) {
         if (movie[i].num == choice) {
@@ -155,7 +155,7 @@ bool theaterAddressSeoul(TheaterAddress *address) {
         printf("8. 신도림\n");
         printf("-1. 뒤로가기\n");
         printf(" -> ");
-        scanf("%d", &choice);	
+        scanf("%d%*c", &choice);
         printf("================================\n");
 
         switch (choice) {
@@ -217,7 +217,7 @@ bool theaterAddresGyeonggi(TheaterAddress *address){
         printf("8. 안양\n");
         printf("-1. 뒤로가기\n");
         printf(" -> ");
-        scanf("%d", &choice);	
+        scanf("%d%*c", &choice);	
         printf("================================\n");
 
         switch (choice) {
@@ -266,7 +266,7 @@ bool theaterAddressIncheon(TheaterAddress *address){
         printf("3. 부평역사\n");
         printf("-1. 뒤로가기\n");
         printf(" -> ");
-        scanf("%d", &choice);	
+        scanf("%d%*c", &choice);	
         printf("================================\n");
 
         switch (choice) {
@@ -337,7 +337,7 @@ bool theaterAddress(TheaterAddress *address) {
         printf("4. 검색\n");
         printf("-1. 뒤로가기\n");
         printf(" -> ");
-        scanf("%d", &regionChoice);	
+        scanf("%d%*c", &regionChoice);	
         printf("================================\n");
 
         switch (regionChoice) {
