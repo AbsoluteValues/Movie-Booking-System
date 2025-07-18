@@ -533,7 +533,7 @@ void SaveBookingToDB(Cinema* cinema, const char* theater, const char* movieTitle
     }
 }
 
-bool SearchAddress(TheaterAddress* ad) {
+bool SearchAddress(TheaterAddress* address) {
     char region[3][8][20] = {
         { "가산디지털", "강동", "건대입구", "김포공항", "노원", "서울대입구", "수유", "신도림" },
         {"광명", "광명아울렛", "동탄", "부천", "수원(수원역)", "안산", "안성", "안양"},
@@ -556,10 +556,10 @@ A:
             if (strcmp(region[i][j], " ") == 0)
                 continue;
             if (strcmp(c, region[i][j]) == 0) {
-                strcpy(ad->region, s[i]);
-                strcpy(ad->theater, region[i][j]);
-                printf("선택한 지역 :  %s\n", ad->region);
-                printf("선택한 영화관 :  %s\n", ad->theater);
+                strcpy(address->region, s[i]);
+                strcpy(address->theater, region[i][j]);
+                printf("선택한 지역 :  %s\n", address->region);
+                printf("선택한 영화관 :  %s\n", address->theater);
                 return true;
             }
         }
