@@ -73,8 +73,8 @@ static void Clr() {
     system("cls");  // 콘솔 창 지우는 기능
 }
 
-void BookingPeople(Cinema* data);
-void BookingSeats(Cinema* data, int n);
+int BookingPeople(Cinema* data);
+int BookingSeats(Cinema* data, int n);
 
 int LoadMoviesFromDB(Movie* movie) {
     int count = 0;
@@ -124,17 +124,20 @@ void PrintMovies(Movie* movie, int count) {
 }
 
 int ChooseMovie(Movie* movie, int count) {
+    A:
+    ;
     int choice;
-    printf("\n영화 번호를 선택하시오 : ");
+    printf("\n영화 번호를 선택하시오(종료: -1) : ");
     scanf("%d", &choice);
+    if (choice == -1) return -1;
     for (int i = 0; i < count; i++) {
         if (movie[i].num == choice) {
             printf("선택한 영화 : %s\n", movie[i].title);
             return i;
         }
     }
-    printf("잘못된 번호입니다.\n");
-    return -1;
+    printf("\n잘못된 번호입니다.\n");
+    goto A;
 }
 
 bool theaterAddressSeoul(TheaterAddress *address) {
@@ -150,7 +153,7 @@ bool theaterAddressSeoul(TheaterAddress *address) {
         printf("6. 서울대입구\n");
         printf("7. 수유\n");
         printf("8. 신도림\n");
-        printf("0. 종료\n");
+        printf("-1. 뒤로가기\n");
         printf(" -> ");
         scanf("%d", &choice);	
         printf("================================\n");
@@ -188,7 +191,7 @@ bool theaterAddressSeoul(TheaterAddress *address) {
                 strcpy(address->theater, "신도림");
                 return true;
                 break;
-            case 0:
+            case -1:
                 return false;
             default:
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
@@ -212,7 +215,7 @@ bool theaterAddresGyeonggi(TheaterAddress *address){
         printf("6. 안산\n");
         printf("7. 안성\n");
         printf("8. 안양\n");
-        printf("0. 종료\n");
+        printf("-1. 뒤로가기\n");
         printf(" -> ");
         scanf("%d", &choice);	
         printf("================================\n");
@@ -242,7 +245,7 @@ bool theaterAddresGyeonggi(TheaterAddress *address){
             case 8:
                 strcpy(address->theater, "안양");
                 break;
-            case 0:
+            case -1:
                 return false;
             default:
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
@@ -261,7 +264,7 @@ bool theaterAddressIncheon(TheaterAddress *address){
         printf("1. 부평\n");
         printf("2. 부평갈산\n");
         printf("3. 부평역사\n");
-        printf("0. 종료\n");
+        printf("-1. 뒤로가기\n");
         printf(" -> ");
         scanf("%d", &choice);	
         printf("================================\n");
@@ -279,7 +282,7 @@ bool theaterAddressIncheon(TheaterAddress *address){
                 strcpy(address->theater, "부평역사");
                 return true;
                 break;
-            case 0:
+            case -1:
                 return false;
             default:
                 printf("잘못된 입력입니다. 다시 선택해주세요.\n");
@@ -298,7 +301,7 @@ bool theaterAddress(TheaterAddress *address) {
         printf("2. 경기\n");
         printf("3. 인천\n");
         printf("4. 검색\n");
-        printf("0. 종료\n");
+        printf("-1. 뒤로가기\n");
         printf(" -> ");
         scanf("%d", &regionChoice);	
         printf("================================\n");
@@ -319,7 +322,7 @@ bool theaterAddress(TheaterAddress *address) {
             case 4:
                 if (SearchAddress(address)) return true;
                 else break;
-            case 0:
+            case -1:
                 return false;
                 break;
             default:
@@ -415,7 +418,7 @@ void PrintSeats(Cinema* data) {
     printf("\n==================================================\n");
 }
 
-void BookingPeople(Cinema* data) {
+int BookingPeople(Cinema* data) {
     // 좌석목록 띄운 채로 몇명 예약할지 결정.
     // 뒤로가기라면 시간/관 선택 창으로.
     // 인원이 0명 초과일때만 BookingSeats 로 진행.
@@ -426,7 +429,7 @@ A:
     printf("\n-1 입력시 이전 메뉴로\n- - - - - - - - - - - - - - -\n");
     printf("예약할 인원 : ");
     scanf("%d%*c", &n);
-    if (n == -1) return;
+    if (n == -1) return 0;
     if (n < 1) {
         printf("1명 이상 선택해주세요.\n");
         system("pause");
@@ -438,11 +441,13 @@ A:
         goto A;
     }
     else {
-        BookingSeats(data, n);
+        int result = BookingSeats(data, n);
+        if (result == 0) goto A;
     }
+    return 0;
 }
 
-void BookingSeats(Cinema* data, int n) {
+int BookingSeats(Cinema* data, int n) {
     char point[20];
     Point p;
     int cnt = 0;
@@ -467,7 +472,7 @@ A:
         if (cnt > 0) {
             ClearChooseSeats(data);
         }
-        return;
+        return 0;
     }
     if (p.x >= 97 && p.x <= 97 + data->sizeX && p.x <= 122 && p.y >= 0 && p.y < data->sizeY) {
         if (data->seats[p.x - 97][p.y].state == BLANK) {
@@ -512,7 +517,7 @@ B:
         break;
     }
 
-    return;
+    return 0;
 }
 
 void SaveBookingToDB(Cinema* cinema, const char* theater, const char* movieTitle) {
@@ -574,17 +579,26 @@ int main(void) {
     int movieCount = LoadMoviesFromDB(movie);
     if (movieCount == 0) return 1;
 
+    A:
     PrintMovies(movie, movieCount);
     int choice = ChooseMovie(movie, movieCount);
     if (choice == -1) return 1;
 
+    B:
+    ;
     TheaterAddress *address = (TheaterAddress*)malloc(sizeof(TheaterAddress));
-    theaterAddress(address);
+    bool result = theaterAddress(address);
+    if (result == 0) {
+        goto A;
+    }
 
     Cinema* preset = (Cinema*)malloc(sizeof(Cinema));
     ResetCinema(preset, 10, 21);
     LoadBookedSeats(preset, address->theater, movie[choice].title);
-    BookingPeople(preset);
+    int asdf = BookingPeople(preset);
+    if (asdf == 0) {
+        goto B;
+    }
 
     SaveBookingToDB(preset, address->theater, movie[choice].title);
     printf("예매를 완료 했습니다.\n");
