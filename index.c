@@ -536,9 +536,9 @@ bool SearchAddress(TheaterAddress* address) {
     char region[3][8][20] = {
         { "가산디지털", "강동", "건대입구", "김포공항", "노원", "서울대입구", "수유", "신도림" },
         {"광명", "광명아울렛", "동탄", "부천", "수원(수원역)", "안산", "안성", "안양"},
-        {"부평", "부평갈산", "부평역사", "", "", "", "", ""}
+        {"부평", "부평갈산", "부평역사", " ", " ", " ", " ", " "}
     };
-    char s[3][5] = { "서울", "인천", "부천" };
+    char s[3][10] = { "서울", "인천", "부천" };
     int i, j;
     char c[20];
 
@@ -550,7 +550,7 @@ A:
         return false;
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 8; j++) {
-            if (region[i][j] == "")
+            if (strcmp(region[i][j], " ") == 0)
                 continue;
             if (strcmp(c, region[i][j]) == 0) {
                 strcpy(ad->region, s[i]);
