@@ -532,7 +532,7 @@ void SaveBookingToDB(Cinema* cinema, const char* theater, const char* movieTitle
     }
 }
 
-bool SearchAddress(TheaterAddress* address) {
+bool SearchAddress() {
     char region[3][8][20] = {
         { "가산디지털", "강동", "건대입구", "김포공항", "노원", "서울대입구", "수유", "신도림" },
         {"광명", "광명아울렛", "동탄", "부천", "수원(수원역)", "안산", "안성", "안양"},
@@ -543,11 +543,13 @@ bool SearchAddress(TheaterAddress* address) {
     char c[20];
 
 A:
-    Clr();
+   Clr();
     printf("영화관 위치 검색(-1 입력 시 이전 메뉴로) : ");
     fgets(c, sizeof(char) * 20, stdin);
+    c[strlen(c) - 1] = '\0';
     if (atoi(&c[0]) == -1)
         return false;
+    printf("%d\n", atoi(&c[0]));
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 8; j++) {
             if (strcmp(region[i][j], " ") == 0)
