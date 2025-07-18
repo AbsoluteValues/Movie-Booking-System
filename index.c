@@ -330,7 +330,6 @@ bool theaterAddress(TheaterAddress *address) {
                 break;
         }
         printf("선택한 지역 :  %s\n", address->region);
-        
     } 
 }
 
