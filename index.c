@@ -75,6 +75,7 @@ static void Clr() {
 
 void BookingPeople(Cinema* data);
 void BookingSeats(Cinema* data, int n);
+bool SearchAddress(TheaterAddress* ad);
 
 int LoadMoviesFromDB(Movie* movie) {
     int count = 0;
