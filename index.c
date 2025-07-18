@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 // #include <conio.h>
+// ^ 윈도우 환경 전용이라 임시 주석 처리
 #include <stdbool.h>
 #include <time.h>
 #include "mysql_client/include/mysql.h"
