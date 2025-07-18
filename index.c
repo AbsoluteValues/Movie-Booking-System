@@ -297,6 +297,7 @@ bool theaterAddress(TheaterAddress *address) {
         printf("1. 서울\n");
         printf("2. 경기\n");
         printf("3. 인천\n");
+        printf("4. 검색\n");
         printf("0. 종료\n");
         printf(" -> ");
         scanf("%d", &regionChoice);	
@@ -315,6 +316,9 @@ bool theaterAddress(TheaterAddress *address) {
                 strcpy(address->region,"인천");
                 if(theaterAddressIncheon(address)) return true;
                 break;
+            case 4:
+                if (SearchAddress(address)) return true;
+                else break;
             case 0:
                 return false;
                 break;
@@ -528,7 +532,39 @@ void SaveBookingToDB(Cinema* cinema, const char* theater, const char* movieTitle
     }
 }
 
+bool SearchAddress(TheaterAddress* address) {
+    char region[3][8][20] = {
+        { "가산디지털", "강동", "건대입구", "김포공항", "노원", "서울대입구", "수유", "신도림" },
+        {"광명", "광명아울렛", "동탄", "부천", "수원(수원역)", "안산", "안성", "안양"},
+        {"부평", "부평갈산", "부평역사", "", "", "", "", ""}
+    };
+    char s[3][5] = { "서울", "인천", "부천" };
+    int i, j;
+    char c[20];
 
+A:
+    Clr();
+    printf("영화관 위치 검색(-1 입력 시 이전 메뉴로) : ");
+    fgets(c, sizeof(char) * 20, stdin);
+    if (atoi(&c[0]) == -1)
+        return false;
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 8; j++) {
+            if (region[i][j] == "")
+                continue;
+            if (strcmp(c, region[i][j]) == 0) {
+                strcpy(ad->region, s[i]);
+                strcpy(ad->theater, region[i][j]);
+                printf("선택한 지역 :  %s\n", address->region);
+                printf("선택한 영화관 :  %s\n", address->theater);
+                return true;
+            }
+        }
+    }
+    printf("해당 지역에는 상영관이 없습니다. 다시 입력해주세요.\n");
+    system("pause");
+    goto A;
+}
 
 int main(void) {
 
